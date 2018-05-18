@@ -8,6 +8,11 @@ public class Linha {
 	private String linha;
 	private String modificacaoLinha;
 	
+	public Linha(String linha, int posicaOriginal, int posicaoPosAnalise) {
+		this.setLinha(linha);
+		this.setPosicaoOriginal(posicaOriginal);
+		this.setPosicaoPosAnalise(posicaoPosAnalise);
+	}
 	
 	public int getPosicaoOriginal() {
 		return posicaoOriginal;
