@@ -6,7 +6,9 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import br.marcos.relatconsignados.control.ControlDiff;
+
+import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -18,7 +20,7 @@ public class MenuSistema extends JPanel {
 	//private SelArqPanel selArq;
 	private boolean estaCarregado = false;
 	
-	public MenuSistema(ControlDiff cD, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
+	public MenuSistema(ControleGeRelatorio controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
 		this.setForeground(corFonteBotoes);
@@ -51,7 +53,7 @@ public class MenuSistema extends JPanel {
     	btnMostrarAtual.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.ATUAIS);
+					saida.renderizar(AbaSistema.Relatorio.RECENTE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}

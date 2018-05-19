@@ -1,14 +1,10 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
-import java.util.Date;
-
 public class Relatorio {
 	private Linha[] linhas;
 	private String id;
-	private int ordem;
-	private int quantLinhas;
-	private Date data;
-	private PerfilAnalise perfil;
+	//private int ordem;
+	//private PerfilAnalise perfil;
 	
 	public Relatorio(Linha[] linhas) {
 		this.setLinhas(linhas);
@@ -32,4 +28,5 @@ public class Relatorio {
 	public int getQuantLinhas() {
 		return linhas.length;
 	}
+
 }

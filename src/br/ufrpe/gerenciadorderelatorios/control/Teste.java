@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.text.BadLocationException;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
@@ -19,9 +18,9 @@ import br.ufrpe.gerenciadorderelatorios.view.Relatorios;
 
 public class Teste {
 	public static void main(String[] args) throws InvalidPasswordException, IOException, BadLocationException {
-		ControlGR control = new ControlGR();
+		ControleGeRelatorio control = new ControleGeRelatorio();
 		File file = new File("C:\\testepdfbox\\consignadobb\\bbjan1.pdf");
-		Relatorio relatorioTeste = control.CriarRelatorio(file);
+		control.carregarRelatorio(file);
 		String[] linhas = new String[relatorioTeste.getQuantLinhas()];
 		Linha[] linha = relatorioTeste.getLinhas();
 		for(int i = 0; i < relatorioTeste.getQuantLinhas(); i++) {

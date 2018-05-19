@@ -12,21 +12,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
-import br.marcos.relatconsignados.control.ControlDiff;
+import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
 
 import java.io.File;
 
 
-public class SelArqPanelBB extends SelArqPanel{
+public class PainelDeSelecaoDeArquivo extends SelArqPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private File[] arquivo = new File[4];
+	private File[] arquivo = new File[1];
 	JFileChooser explorador = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-	private ControlDiff sessaoD;
+	private ControleGeRelatorio sessaoGR;
 
-	public SelArqPanelBB(ControlDiff cD) {
+	public PainelDeSelecaoDeArquivo(ControleGeRelatorio controle) {
 		super();
 		
 		this.setOpaque(false);
@@ -34,9 +34,13 @@ public class SelArqPanelBB extends SelArqPanel{
 		this.setBackground(Color.ORANGE);
 		this.setLayout(null);
 		
-		JLabel label = new JLabel("Consignado do M\u00EAs Atual:");
+		JLabel label = new JLabel("Relatorio:");
 		label.setBounds(0, 0, 130, 14);
 		this.add(label);
+		
+		JLabel label_1 = new JLabel("Arquivo");
+		label_1.setBounds(0, 25, 59, 14);
+		this.add(label_1);
 		
 		JTextField campo1 = new JTextField();
 		campo1.setColumns(10);
@@ -51,7 +55,7 @@ public class SelArqPanelBB extends SelArqPanel{
 				if (selecao == JFileChooser.APPROVE_OPTION) {
 					arquivo[0] = explorador.getSelectedFile();
 					campo1.setText(arquivo[0].getAbsolutePath());
-					System.out.println(arquivo[0].getAbsolutePath());
+					System.out.println(arquivo[0].getAbsolutePath());//conferindo local do arquivo no console
 				}
 			}
 		});
@@ -62,7 +66,7 @@ public class SelArqPanelBB extends SelArqPanel{
 		button.setBounds(216, 16, 78, 23);
 		this.add(button);
 		
-		JTextField campo3 = new JTextField();
+		/*JTextField campo3 = new JTextField();
 		campo3.setColumns(10);
 		campo3.setBounds(64, 103, 154, 20);
 		
@@ -89,10 +93,6 @@ public class SelArqPanelBB extends SelArqPanel{
 		JLabel label_2 = new JLabel("Consignado do M\u00EAs Anterior:");
 		label_2.setBounds(0, 81, 166, 14);
 		this.add(label_2);
-		
-		JLabel label_1 = new JLabel("1\u00BA Arquivo");
-		label_1.setBounds(0, 25, 59, 14);
-		this.add(label_1);
 		
 		JLabel label_7 = new JLabel("2\u00BA Arquivo");
 		label_7.setBounds(0, 58, 59, 14);
@@ -151,9 +151,9 @@ public class SelArqPanelBB extends SelArqPanel{
 		button_7.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		button_7.setBackground(new Color(100, 149, 237));
 		button_7.setBounds(216, 131, 78, 23);
-		this.add(button_7);
+		this.add(button_7);*/
 		
-		this.setSessaoD(cD);
+		this.setSessaoGR(controle);
 	}
 	
 	@Override
@@ -165,7 +165,7 @@ public class SelArqPanelBB extends SelArqPanel{
 				quantidade++;
 			}
 		}
-		if(quantidade == 4) {
+		if(quantidade == 1) {
 			resultado = true;
 		}
 		return resultado;
@@ -175,10 +175,11 @@ public class SelArqPanelBB extends SelArqPanel{
 	public boolean carregarArquivos() {
 		boolean resultado = true;
 		if(this.estaPronto()) {
-			int[] inicioApos = {7, 7, 7, 7};
-			int[] fimAntes = {6, 5, 6, 5};
+			/*Vetores para mais de um arquivo*/
+			//int[] inicioApos = {7, 7, 7, 7};
+			//int[] fimAntes = {6, 5, 6, 5};
 			try {
-				sessaoD.carregarConsignacoesBB(arquivo, inicioApos, fimAntes);
+				sessaoGR.carregarRelatorio(arquivo[0]);
 			} catch (Exception e) {
 				resultado = false;
 				JOptionPane.showMessageDialog(null, "Erro no carregamento dos arquivos!", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -191,7 +192,7 @@ public class SelArqPanelBB extends SelArqPanel{
 		return resultado;
 	}
 	
-	public void setSessaoD(ControlDiff sessaoD) {
-		this.sessaoD = sessaoD;
+	public void setSessaoGR(ControleGeRelatorio sessao) {
+		this.sessaoGR = sessao;
 	}
 }

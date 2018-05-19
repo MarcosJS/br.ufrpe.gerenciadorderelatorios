@@ -9,13 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
-import br.marcos.relatconsignados.control.ControlDiff;
+import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class AbaSistema extends JPanel {
 	public static enum Relatorio {
-		ATUAIS, ANTERIORES, NOVOS, EXCLUIDOS, INALTERADOS;
+		RECENTE, ANTERIORES, NOVOS, EXCLUIDOS, INALTERADOS;
 	}
 	/**
 	 * 
@@ -23,14 +23,14 @@ public class AbaSistema extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
 	private int tipo;	
-	private ControlDiff cD;
+	private ControleGeRelatorio cGR;
 	private String relExibido[] = null;
 	private String cabecalho = null;
 	private String nomeArq = null;
 	private Color corFaixas;
 	private Color corSelecao;
 	
-	public AbaSistema(ControlDiff cD, int tipo, Color corFaixas, Color corSelecao) {
+	public AbaSistema(ControleGeRelatorio cGR, int tipo, Color corFaixas, Color corSelecao) {
 		super();
 			
 		this.setBackground(Color.WHITE);
@@ -77,7 +77,7 @@ public class AbaSistema extends JPanel {
 		scrollPane.setBackground(Color.WHITE);
 		scrollPane.setBounds(0, 0, 850, 398);
 		saida.add(scrollPane);
-		this.setcD(cD);
+		this.setcGR(cGR);
 		this.setTipo(tipo);
 		this.setCorFaixas(corFaixas);
 		this.setCorSelecao(corSelecao);
@@ -85,25 +85,26 @@ public class AbaSistema extends JPanel {
 	
 	public void renderizar(Relatorio rel) {
 		switch(rel) {
-		case ATUAIS:
-			this.relExibido = cD.obterListaConsignacoes(this.tipo, ControlDiff.CONSIG_ATUAL);
-			this.cabecalho = "CONSIGNADOS DO MÊS ATUAL";
+		case RECENTE:
+			this.relExibido = cGR.obterListaTexto();
+			//this.relExibido = cGR.obterLista(this.tipo, ControleGeRelatorio.CONSIG_ATUAL);
+			this.cabecalho = "ULTIMO RELATORIO";
 			break;
-		case ANTERIORES:
-			this.relExibido = cD.obterListaConsignacoes(this.tipo, ControlDiff.CONSIG_ANTERIOR);
+		/*case ANTERIORES:
+			this.relExibido = cGR.obterListaConsignacoes(this.tipo, ControlDiff.CONSIG_ANTERIOR);
 			this.cabecalho = "CONSIGNADOS DO MÊS ANTERIOR";
-			break;
+			break;*/
 		case NOVOS:
-			this.relExibido = cD.obterListaNovos(this.tipo);
-			this.cabecalho = "NOVOS CONSIGNADOS";
+			this.relExibido = cGR.obterListaNovos(this.tipo);
+			this.cabecalho = "NOVOS";
 			break;
 		case EXCLUIDOS:
-			this.relExibido = cD.obterListaExcluidos(this.tipo);
-			this.cabecalho = "CONSIGNADOS EXCLUÍDOS";
+			this.relExibido = cGR.obterListaExcluidos(this.tipo);
+			this.cabecalho = "EXCLUÍDOS";
 			break;
 		case INALTERADOS:
-			this.relExibido = cD.obterListaInalterados(this.tipo);
-			this.cabecalho = "CONSIGNADOS INALTERADOS";
+			this.relExibido = cGR.obterListaInalterados(this.tipo);
+			this.cabecalho = "INALTERADOS";
 			break;
 		default:
 			break;
@@ -132,8 +133,8 @@ public class AbaSistema extends JPanel {
 		}
 	}
 	
-	public void setcD(ControlDiff cD) {
-		this.cD = cD;
+	public void setcGR(ControleGeRelatorio cGR) {
+		this.cGR = cGR;
 	}
 	
 	public void setTipo(int tipo) {
