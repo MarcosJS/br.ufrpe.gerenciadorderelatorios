@@ -1,4 +1,4 @@
-package br.ufrpe.gerenciadorderelatorios.control;
+package br.ufrpe.gerenciadorderelatorios;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -11,19 +11,20 @@ import javax.swing.text.BadLocationException;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
+import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
 import br.ufrpe.gerenciadorderelatorios.model.Linha;
 import br.ufrpe.gerenciadorderelatorios.model.Relatorio;
 import br.ufrpe.gerenciadorderelatorios.view.PainelTextoDestacado;
 import br.ufrpe.gerenciadorderelatorios.view.Relatorios;
 
-public class Teste {
+public class TesteGui {
 	public static void main(String[] args) throws InvalidPasswordException, IOException, BadLocationException {
 		ControleGeRelatorio control = new ControleGeRelatorio();
 		File file = new File("C:\\testepdfbox\\consignadobb\\bbjan1.pdf");
 		control.carregarRelatorio(file);
-		String[] linhas = new String[relatorioTeste.getQuantLinhas()];
-		Linha[] linha = relatorioTeste.getLinhas();
-		for(int i = 0; i < relatorioTeste.getQuantLinhas(); i++) {
+		/*String[] linhas = new String[control.getQuantLinhas()];
+		Linha[] linha = control.relatorioTeste.getLinhas();
+		for(int i = 0; i < control.relatorioTeste.getQuantLinhas(); i++) {
 			System.out.print(linha[i].getLinha());
 			linhas[i] = linha[i].getLinha();
 		}
@@ -38,6 +39,6 @@ public class Teste {
     	tela.setTitle("ConsigDiff");
     	tela.getContentPane().setLayout(new CardLayout(0, 0));
     	tela.add(scrool);
-    	tela.setVisible(true);
+    	tela.setVisible(true);*/
 	}
 }
