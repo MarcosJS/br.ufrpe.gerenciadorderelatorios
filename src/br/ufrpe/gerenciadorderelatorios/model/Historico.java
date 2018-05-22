@@ -11,11 +11,17 @@ public class Historico implements Serializable, IGravavel{
 	private static final long serialVersionUID = -1498544530598941169L;
 	private String id;
 	private transient ArrayList<Relatorio> relatorios;
+	private Estrutura estrurura;
 	//private transient PerfilAnalise perfil;
 	
 	public Historico(Relatorio relatorio, String id) {
 		this.definirRelatorios(new ArrayList<Relatorio>());
 		this.adicionarRelatorio(relatorio);
+		/*Criando estrutura padrão de diretórios.(historicos/id/rel)*/
+		Estrutura rel = new Estrutura("rel", null);
+		Estrutura historico = new Estrutura(id, new Estrutura[] {rel});
+		Estrutura historicos = new Estrutura("historicos", new Estrutura[] {historico});
+		this.difinirEstrutura(historicos);
 	}
 	
 	/**Adiciona um relatório ao histórico desde que aquele ainda não exista.
@@ -55,5 +61,13 @@ public class Historico implements Serializable, IGravavel{
 	@Override
 	public String obterIdOriginador() {
 		return null;
+	}
+
+	public Estrutura obterEstrutura() {
+		return this.estrurura;
+	}
+
+	private void difinirEstrutura(Estrutura estrurura) {
+		this.estrurura = estrurura;
 	}
 }

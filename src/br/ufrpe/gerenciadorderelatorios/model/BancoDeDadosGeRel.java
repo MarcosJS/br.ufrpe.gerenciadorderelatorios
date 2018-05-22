@@ -7,26 +7,37 @@ import java.io.ObjectOutputStream;
 
 import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.ExclusaoDeArquivoOuDiretorioNegadaException;
-import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.TipoDeArquivoDifereDoEsperadoException;
 
 public class BancoDeDadosGeRel {
-	private static final String NOME_BANCO_DE_DADOS = "bd_relatorios";
+	private static final String[] BANCO_DE_DADOS = {"bd_historicos", "bd_acesso"};
 	//Obtendo diretorio atual
-	private File diretorioDeTrabalho = new File(System.getProperty("user.dir"));
-	private File bancoDeDados;
-		
+	private File diretorioDeTrabalho;
+	private File [] bancoDeDados;
+	
+	/**Inicializa o banco de dados.*/
 	public void iniciarBancoDeDados() {
-		File banco = buscarDiretorioArquivo(diretorioDeTrabalho, NOME_BANCO_DE_DADOS);
-		/*Um novo banco é criado caso ainda não exista.*/
-		if(banco != null) {
-			bancoDeDados = criarDiretorio(diretorioDeTrabalho, NOME_BANCO_DE_DADOS);
-		} else {
-			bancoDeDados = banco;
+		/*Obtendo o diretório de trabalho*/
+		this.definirDiretorioDeTrabalho(new File(System.getProperty("user.dir")));
+		
+		Estrutura[] estrutura = new Estrutura[BANCO_DE_DADOS.length];
+		File[] banco = new File[BANCO_DE_DADOS.length];
+		
+		for(int i = 0; i < BANCO_DE_DADOS.length; i++) {
+			/*Criando estrutura padrão dos bancos.*/
+			estrutura[i] = new Estrutura(BANCO_DE_DADOS[i], null);
+			
+			banco[i] = new File(this.construirCaminho(new String[] {diretorioDeTrabalho.getAbsolutePath(), BANCO_DE_DADOS[i]}));
+			
+			/*Um novo banco é criado caso ainda não exista.*/
+			if(!banco[i].exists()) {
+				criarEstrutura(diretorioDeTrabalho.getAbsolutePath(), estrutura[i]);
+			}
+			bancoDeDados[i] = banco[i];
 		}
 	}
 	
-	/**Retorna um diretório ou arquivo apartir de diretório dado.*/
+	/**Retorna um diretório ou arquivo apartir de diretório dado.*//*
 	private File buscarDiretorioArquivo(File diretorioAtual, String alvo) {
 		File diretorioOuArquivo = null;
 		if(diretorioAtual.getName().equals(alvo)) {
@@ -46,21 +57,28 @@ public class BancoDeDadosGeRel {
 		}
 		
 		return diretorioOuArquivo;
-	}
+	}*/
 	
-	private File criarDiretorio(File diretorioAtual, String nome) {
-		File diretorio = new File(this.construirCaminho(new String[] {diretorioAtual.getAbsolutePath(), nome}));
+	private void criarEstrutura(String diretorioRaiz, Estrutura estrutura) {
+		
+		File diretorio = new File(this.construirCaminho(new String[] {diretorioRaiz, estrutura.obterRaiz()}));
 		/*Criando novo diretório com 'mkdir()'*/
-		diretorio.mkdir();
-		return diretorio;
+		if(!diretorio.exists()) {
+			diretorio.mkdir();
+		}		
+		if(estrutura.obterSubDiretorios() != null) {
+			for(Estrutura e: estrutura.obterSubDiretorios()) {
+				criarEstrutura(diretorio.getAbsolutePath(), e);
+			}
+		}
 	}
 	
-	/**Salva o objeto no diretório de acordo com o seu tipo.
-	 * @throws JaExisteArquivoOuDiretorioException*/
-	public void adicionar(IGravavel gravavel) {
-		File diretorio = this.buscarDiretorioArquivo(this.getBancoDeDados(), gravavel.obterIdOriginador());
+	/**Salva o objeto no diretório de acordo com o seu tipo.*/
+	public void adicionar(String banco, IGravavel gravavel) {
+		String[] lista =  {this.obterDiretorioDeTrabalho().getAbsolutePath(), banco, gravavel.obterIdOriginador()};
+		File diretorio = new File(this.construirCaminho(lista));
 		/*Verificando se não é um hisórico.*/
-		if (gravavel.obterIdOriginador() != null) {
+		if (diretorio.exists() && diretorio.isDirectory()) {
 			String caminhoArquivo = null;
 			if(gravavel instanceof Relatorio) {
 				caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), "rel", gravavel.obterId()+".ser"});
@@ -78,8 +96,8 @@ public class BancoDeDadosGeRel {
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Erro: Estrutura incompleta\nRestaurando estrutura");
-				diretorio = criarDiretorio(diretorio, "rel");
-				this.adicionar(gravavel);
+				criarEstrutura(diretorio.getAbsolutePath(), gravavel.obterEstrutura());
+				this.adicionar(banco, gravavel);
 			} finally {
 				if (arquivoSaida != null) {
 					try {
@@ -98,8 +116,8 @@ public class BancoDeDadosGeRel {
 			}
 		/*Se for histórico, é um novo histórico, então cria-se um novo diretório para o novo histórico*/
 		} else {
-			diretorio = criarDiretorio(this.getBancoDeDados(), gravavel.obterId());
-			diretorio = criarDiretorio(diretorio, "rel");
+			diretorio = criarEstrutura(this.obterBancoDeDados(), gravavel.obterId());
+			diretorio = criarEstrutura(diretorio, "rel");
 			this.adicionar(gravavel);
 		}
 	}
@@ -108,7 +126,7 @@ public class BancoDeDadosGeRel {
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException*/
 	public void remover(String diretorioPai, String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
-		File diretorio = this.buscarDiretorioArquivo(this.getBancoDeDados(), diretorioPai);
+		File diretorio = this.buscarDiretorioArquivo(this.obterBancoDeDados(), diretorioPai);
 		/*Verificando se diretório existe*/
 		if (diretorio != null) {
 			String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), nomeArquivo});
@@ -117,10 +135,10 @@ public class BancoDeDadosGeRel {
 			/*Verificando se já existe o arquivo*/
 			if(alvo.exists()) {
 				if(!alvo.delete()) {
-					throw new ExclusaoDeArquivoOuDiretorioNegadaException("Permissao para excluir o arquivo foi negada ou diretório não esta vazio: "+alvo.getName());
+					throw new ExclusaoDeArquivoOuDiretorioNegadaException("Permissao para excluir o arquivo foi negada ou diretório não esta vazio: "+alvo.obterName());
 				}
 			} else {
-				throw new ArquivoOuDiretorioNaoExisteException("O diretório ou arquivo não existe: "+alvo.getName());
+				throw new ArquivoOuDiretorioNaoExisteException("O diretório ou arquivo não existe: "+alvo.obterName());
 			}
 		} else {
 			throw new ArquivoOuDiretorioNaoExisteException("O diretorio não existe: "+diretorioPai);
@@ -133,7 +151,7 @@ public class BancoDeDadosGeRel {
 	 * @throws TipoDeArquivoDifereDoEsperadoException */
 	public File consultar(String idHhistorico, String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException, TipoDeArquivoDifereDoEsperadoException {
 		File alvo = null;
-		File historico = this.buscarDiretorioArquivo(this.getBancoDeDados(), idHhistorico);
+		File historico = this.buscarDiretorioArquivo(this.obterBancoDeDados(), idHhistorico);
 		/*Verificando se diretório existe*/
 		if (historico != null) {
 			String caminhoArquivo = this.construirCaminho(new String[] {historico.getAbsolutePath(), nomeArquivo});
@@ -143,10 +161,10 @@ public class BancoDeDadosGeRel {
 				if(arquivo.isFile()) {
 					alvo = arquivo;
 				} else {
-					throw new TipoDeArquivoDifereDoEsperadoException("Permissao para excluir o arquivo foi negada ou diretório não esta vazio: "+arquivo.getName());
+					throw new TipoDeArquivoDifereDoEsperadoException("Permissao para excluir o arquivo foi negada ou diretório não esta vazio: "+arquivo.obterName());
 				}
 			} else {
-				throw new ArquivoOuDiretorioNaoExisteException("O diretório ou arquivo não existe: "+arquivo.getName());
+				throw new ArquivoOuDiretorioNaoExisteException("O diretório ou arquivo não existe: "+arquivo.obterName());
 			}
 		} else {
 			throw new ArquivoOuDiretorioNaoExisteException("O histórico não existe: "+idHhistorico);
@@ -169,7 +187,7 @@ public class BancoDeDadosGeRel {
 		return "BancoDeDadosGeRel [diretorioDeTrabalho=" + diretorioDeTrabalho + ", bancoDeDados=" + bancoDeDados.getAbsolutePath() + "]";
 	}
 
-	public File getDiretorioDeTrabalho() {
+	public File obterDiretorioDeTrabalho() {
 		return diretorioDeTrabalho;
 	}
 
@@ -177,7 +195,8 @@ public class BancoDeDadosGeRel {
 		this.diretorioDeTrabalho = diretorioDeTrabalho;
 	}
 
-	public File getBancoDeDados() {
+	public File obterBancoDeDados() {
 		return bancoDeDados;
 	}
+
 }
