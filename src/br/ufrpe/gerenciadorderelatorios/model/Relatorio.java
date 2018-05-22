@@ -1,32 +1,51 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
-public class Relatorio {
+import java.io.Serializable;
+
+public class Relatorio implements Serializable, IGravavel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9063960994820430012L;
 	private Linha[] linhas;
 	private String id;
+	private String historico;
 	//private int ordem;
 	//private PerfilAnalise perfil;
 	
 	public Relatorio(Linha[] linhas) {
-		this.setLinhas(linhas);
+		this.definirLinhas(linhas);
 	}
 	
-	public Linha[] getLinhas() {
+	public Linha[] obterLinhas() {
 		return linhas;
 	}
 
-	private void setLinhas(Linha[] linhas) {
+	private void definirLinhas(Linha[] linhas) {
 		this.linhas = linhas;
 	}
-
-	public String getId() {
+	
+	public String obterId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void definirId(String id) {
 		this.id = id;
 	}
 
-	public int getQuantLinhas() {
+	public int obterQuantLinhas() {
 		return linhas.length;
 	}
 
+	public String obterHistorico() {
+		return historico;
+	}
+
+	public void definirHistorico(String historico) {
+		this.historico = historico;
+	}
+
+	@Override
+	public String obterIdOriginador() {
+		return this.obterHistorico();
+	}
 }

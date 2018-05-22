@@ -11,16 +11,16 @@ public class PerfilAnalise {
 	private int ultimaLinha;
 
 	PerfilAnalise(int tipoAnalise, int inicio, int fim) {
-		setTipoAnalise(tipoAnalise);
-		setLinhaDeInicio(inicio);
-		setUltimaLinha(fim);
+		definirTipoAnalise(tipoAnalise);
+		definirLinhaDeInicio(inicio);
+		definirUltimaLinha(fim);
 	}
 
 	public int getLinhaDeinicio() {
 		return linhaDeInicio;
 	}
 
-	public void setLinhaDeInicio(int inicio) {
+	public void definirLinhaDeInicio(int inicio) {
 		this.linhaDeInicio = inicio;
 	}
 
@@ -28,7 +28,7 @@ public class PerfilAnalise {
 		return ultimaLinha;
 	}
 
-	public void setUltimaLinha(int fim) {
+	public void definirUltimaLinha(int fim) {
 		this.ultimaLinha = fim;
 	}
 
@@ -36,7 +36,7 @@ public class PerfilAnalise {
 		return tipoAnalise;
 	}
 
-	public void setTipoAnalise(int tipoAnalise) {
+	public void definirTipoAnalise(int tipoAnalise) {
 		this.tipoAnalise = tipoAnalise;
 	}
 }

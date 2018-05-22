@@ -1,21 +1,13 @@
 package br.ufrpe.gerenciadorderelatorios;
 
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.text.BadLocationException;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
 import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
-import br.ufrpe.gerenciadorderelatorios.model.Linha;
-import br.ufrpe.gerenciadorderelatorios.model.Relatorio;
-import br.ufrpe.gerenciadorderelatorios.view.PainelTextoDestacado;
-import br.ufrpe.gerenciadorderelatorios.view.Relatorios;
 
 public class TesteGui {
 	public static void main(String[] args) throws InvalidPasswordException, IOException, BadLocationException {

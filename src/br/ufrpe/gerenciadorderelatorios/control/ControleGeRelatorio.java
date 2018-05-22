@@ -55,9 +55,9 @@ public class ControleGeRelatorio {
 	}
 
 	public String[] obterListaTexto() {
-		String[] linhasTexto = new String[this.relatorio.getQuantLinhas()];
-		Linha[] linhas = this.relatorio.getLinhas();
-		for(int i = 0; i < this.relatorio.getQuantLinhas(); i++) {
+		String[] linhasTexto = new String[this.relatorio.obterQuantLinhas()];
+		Linha[] linhas = this.relatorio.obterLinhas();
+		for(int i = 0; i < this.relatorio.obterQuantLinhas(); i++) {
 			linhasTexto[i] = linhas[i].getLinha();
 		}
 		return linhasTexto;

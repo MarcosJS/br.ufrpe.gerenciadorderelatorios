@@ -1,6 +1,12 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
-public class Linha {
+import java.io.Serializable;
+
+public class Linha implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4929477468964210438L;
 	private int posicaoOriginal;
 	private int posicaoPosAnalise;
 	private String idRelatorio;
