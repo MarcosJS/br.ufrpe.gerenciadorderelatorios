@@ -10,7 +10,8 @@ public class Historico implements Serializable, IGravavel{
 	 */
 	private static final long serialVersionUID = -1498544530598941169L;
 	private String id;
-	private ArrayList<Relatorio> relatorios;
+	private transient ArrayList<Relatorio> relatorios;
+	//private transient PerfilAnalise perfil;
 	
 	public Historico(Relatorio relatorio, String id) {
 		this.definirRelatorios(new ArrayList<Relatorio>());

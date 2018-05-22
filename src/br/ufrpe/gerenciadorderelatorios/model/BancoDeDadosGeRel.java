@@ -62,10 +62,10 @@ public class BancoDeDadosGeRel {
 		/*Verificando se não é um hisórico.*/
 		if (gravavel.obterIdOriginador() != null) {
 			String caminhoArquivo = null;
-			if(gravavel instanceof PerfilAnalise) {
-				caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), gravavel.obterId()});
+			if(gravavel instanceof Relatorio) {
+				caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), "rel", gravavel.obterId()+".ser"});
 			} else {
-				caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), gravavel.obterId()});
+				caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), gravavel.obterId()+".ser"});
 			}
 			
 			FileOutputStream arquivoSaida = null;
@@ -99,7 +99,6 @@ public class BancoDeDadosGeRel {
 		/*Se for histórico, é um novo histórico, então cria-se um novo diretório para o novo histórico*/
 		} else {
 			diretorio = criarDiretorio(this.getBancoDeDados(), gravavel.obterId());
-			//salvar historico
 			diretorio = criarDiretorio(diretorio, "rel");
 			this.adicionar(gravavel);
 		}
