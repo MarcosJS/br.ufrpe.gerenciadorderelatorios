@@ -1,12 +1,19 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Estrutura {
 	private String raiz;
-	private Estrutura[] subDiretorios;
+	private ArrayList <Estrutura> subDiretorios;
 	
 	public Estrutura(String raiz, Estrutura[] subDiretorios) {
 		this.definirRaiz(raiz);
 		this.definirSubDiretorios(subDiretorios);
+	}
+	
+	public void adicionar(Estrutura e) {
+		this.subDiretorios.add(e);
 	}
 	
 	public String obterRaiz() {
@@ -18,10 +25,10 @@ public class Estrutura {
 	}
 	
 	public Estrutura[] obterSubDiretorios() {
-		return subDiretorios;
+		return subDiretorios.toArray(new Estrutura[subDiretorios.size()]);
 	}
 	
 	public void definirSubDiretorios(Estrutura[] subDiretorios) {
-		this.subDiretorios = subDiretorios;
+		this.subDiretorios = new ArrayList <Estrutura>(Arrays.asList(subDiretorios));
 	}
 }

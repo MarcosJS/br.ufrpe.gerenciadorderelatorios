@@ -1,27 +1,26 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Historico implements Serializable, IGravavel{
+public class Historico extends Gravavel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1498544530598941169L;
-	private String id;
 	private transient ArrayList<Relatorio> relatorios;
-	private Estrutura estrurura;
+	
 	//private transient PerfilAnalise perfil;
 	
 	public Historico(Relatorio relatorio, String id) {
 		this.definirRelatorios(new ArrayList<Relatorio>());
 		this.adicionarRelatorio(relatorio);
+		super.definirId(id);
+		
 		/*Criando estrutura padrão de diretórios.(historicos/id/rel)*/
-		Estrutura rel = new Estrutura("rel", null);
-		Estrutura historico = new Estrutura(id, new Estrutura[] {rel});
-		Estrutura historicos = new Estrutura("historicos", new Estrutura[] {historico});
-		this.difinirEstrutura(historicos);
+		Estrutura historico = new Estrutura(this.obterId(), null);
+		Estrutura bd = new Estrutura("bd_historicos", new Estrutura[] {historico});
+		this.definirEstrutura(bd);
 	}
 	
 	/**Adiciona um relatório ao histórico desde que aquele ainda não exista.
@@ -48,26 +47,5 @@ public class Historico implements Serializable, IGravavel{
 	
 	public void definirRelatorios(ArrayList<Relatorio> relatorios) {
 		this.relatorios = relatorios;
-	}
-
-	public String obterId() {
-		return id;
-	}
-
-	public void definirId(String id) {
-		this.id = id;
-	}
-
-	@Override
-	public String obterIdOriginador() {
-		return null;
-	}
-
-	public Estrutura obterEstrutura() {
-		return this.estrurura;
-	}
-
-	private void difinirEstrutura(Estrutura estrurura) {
-		this.estrurura = estrurura;
 	}
 }
