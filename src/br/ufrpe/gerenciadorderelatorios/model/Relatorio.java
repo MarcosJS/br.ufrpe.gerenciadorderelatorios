@@ -4,21 +4,14 @@ public class Relatorio extends Gravavel{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9063960994820430012L;
+	private static transient  final long serialVersionUID = -9063960994820430012L;
 	private Linha[] linhas;
 	private String historico;
-	private Estrutura estrutura;
 	//private int ordem;
 	//private PerfilAnalise perfil;
 	
 	public Relatorio(Linha[] linhas) {
 		this.definirLinhas(linhas);
-		
-		/*Criando estrutura padrão de diretórios.(historicos/historico/rel)*/
-		Estrutura rel = new Estrutura("rel", null);
-		Estrutura historico = new Estrutura(this.obterHistorico(), new Estrutura[] {rel});
-		Estrutura bd = new Estrutura("bd_historicos", new Estrutura[] {historico});
-		this.definirEstrutura(bd);
 	}
 	
 	public Linha[] obterLinhas() {
@@ -39,5 +32,10 @@ public class Relatorio extends Gravavel{
 
 	public void definirHistorico(String historico) {
 		this.historico = historico;
+	}
+
+	@Override
+	public String obterId() {
+		return super.obtertId();
 	}
 }

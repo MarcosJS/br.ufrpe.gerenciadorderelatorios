@@ -7,7 +7,7 @@ public class Historico extends Gravavel{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1498544530598941169L;
+	private static transient  final long serialVersionUID = -1498544530598941169L;
 	private transient ArrayList<Relatorio> relatorios;
 	
 	//private transient PerfilAnalise perfil;
@@ -16,11 +16,6 @@ public class Historico extends Gravavel{
 		this.definirRelatorios(new ArrayList<Relatorio>());
 		this.adicionarRelatorio(relatorio);
 		super.definirId(id);
-		
-		/*Criando estrutura padrão de diretórios.(historicos/id/rel)*/
-		Estrutura historico = new Estrutura(this.obterId(), null);
-		Estrutura bd = new Estrutura("bd_historicos", new Estrutura[] {historico});
-		this.definirEstrutura(bd);
 	}
 	
 	/**Adiciona um relatório ao histórico desde que aquele ainda não exista.
@@ -47,5 +42,10 @@ public class Historico extends Gravavel{
 	
 	public void definirRelatorios(ArrayList<Relatorio> relatorios) {
 		this.relatorios = relatorios;
+	}
+
+	@Override
+	public String obterId() {
+		return super.obtertId();
 	}
 }

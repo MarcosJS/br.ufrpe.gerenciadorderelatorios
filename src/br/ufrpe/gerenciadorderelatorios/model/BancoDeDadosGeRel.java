@@ -1,15 +1,16 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.ExclusaoDeArquivoOuDiretorioNegadaException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
-import br.ufrpe.gerenciadorderelatorios.excecoes.TipoDeArquivoDifereDoEsperadoException;
 
 public class BancoDeDadosGeRel {
 	private static final String BANCO_DE_DADOS = "bd_gerel";
@@ -19,19 +20,20 @@ public class BancoDeDadosGeRel {
 	private Estrutura estrutura;
 	
 	/**Inicializa o banco de dados.*/
-	public void iniciarBancoDeDados() {
+	public void iniciarBancoDeDados(String raizBanco) {
 		/*Criando a estrutura de diretórios para o banco de dados.*/
 		this.definirEstrutura(new Estrutura(BANCO_DE_DADOS, null));
+		
+		
 		
 		for(String nomeBanco: BANCOS) {
 			Estrutura banco = new Estrutura(nomeBanco, null);
 			this.obterEstrutura().adicionar(banco);
 		}
 		
-
-		this.bancoDeDados = new File(this.construirCaminho(new String[] {System.getProperty("user.dir"), BANCO_DE_DADOS}));
+		this.bancoDeDados = new File(this.construirCaminho(new String[] {raizBanco, BANCO_DE_DADOS}));
+		this.criarEstrutura(new File(raizBanco), this.estrutura);
 		
-		this.criarEstrutura(new File(System.getProperty("user.dir")), estrutura);
 	}
 	
 	/**Criar uma estrutura de pastas de acordo com o paramentro 'estrutura'.*/
@@ -44,6 +46,7 @@ public class BancoDeDadosGeRel {
 			diretorio.mkdir();
 		}		
 		if(estrutura.obterSubDiretorios() != null) {
+			
 			for(Estrutura e: estrutura.obterSubDiretorios()) {
 				criarEstrutura(diretorio, e);
 			}
@@ -116,7 +119,7 @@ public class BancoDeDadosGeRel {
 		File diretorio = new File(caminhoDiretorio);
 		
 		/*Verificando se o diretório existe*/
-		if (diretorio.exists()) {
+		if (diretorio.exists() && diretorio.isDirectory()) {
 			
 			/*Verificando se já é esta o diretório correto para exlusão.*/
 			if(estrutura.obterSubDiretorios() == null) {
@@ -146,29 +149,69 @@ public class BancoDeDadosGeRel {
 	
 	/**Retorna o arquivo especificado se houver.
 	 * @throws ArquivoOuDiretorioNaoExisteException 
-	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException 
-	 * @throws TipoDeArquivoDifereDoEsperadoException */
-	public File consultar(String idHhistorico, String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException, TipoDeArquivoDifereDoEsperadoException {
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException */
+	public Serializable consultar(File base, Estrutura estrutura , String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+		Serializable arquivo = null;
 		File alvo = null;
-		File historico = this.buscarDiretorioArquivo(this.obterBancoDeDados(), idHhistorico);
-		/*Verificando se diretório existe*/
-		if (historico != null) {
-			String caminhoArquivo = this.construirCaminho(new String[] {historico.getAbsolutePath(), nomeArquivo});
-			File arquivo = new File(caminhoArquivo);
-			/*Verificando se a estrutura esta completa e o arquivo existe.*/
-			if(arquivo.exists()) {
-				if(arquivo.isFile()) {
-					alvo = arquivo;
+		String caminhoDiretorio =  this.construirCaminho(new String[] {base.getAbsolutePath(), estrutura.obterRaiz()});
+		File diretorio = new File(caminhoDiretorio);
+		
+		/*Verificando se o diretório existe*/
+		if (diretorio.exists() && diretorio.isDirectory()) {
+			
+			/*Verificando se já é esta o diretório correto para pesquisar o arquivo.*/
+			if(estrutura.obterSubDiretorios() == null) {
+				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), nomeArquivo});
+				caminhoArquivo = caminhoArquivo.concat(".ser");
+				alvo = new File(caminhoArquivo);
+				
+				/*Verificando se o arquivo existe.*/
+				if(alvo.exists()) {
+					
+					/*Recuperando o arquivo.*/
+					FileInputStream arquivoDeEntrada = null;
+					ObjectInputStream ObjetoDeEntrada = null;
+
+					try {
+
+						arquivoDeEntrada = new FileInputStream(alvo.getAbsolutePath());
+						ObjetoDeEntrada = new ObjectInputStream(arquivoDeEntrada);
+						arquivo = (Serializable) ObjetoDeEntrada.readObject();
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					} finally {
+
+						if (arquivoDeEntrada != null) {
+							try {
+								arquivoDeEntrada.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+
+						if (ObjetoDeEntrada != null) {
+							try {
+								ObjetoDeEntrada.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					
 				} else {
-					throw new TipoDeArquivoDifereDoEsperadoException("Permissao para excluir o arquivo foi negada ou diretório não esta vazio: "+arquivo.getName());
+					throw new ArquivoOuDiretorioNaoExisteException("O arquivo não existe: "+alvo.getName());
 				}
 			} else {
-				throw new ArquivoOuDiretorioNaoExisteException("O diretório ou arquivo não existe: "+arquivo.getName());
+				for(Estrutura e: estrutura.obterSubDiretorios()) {
+					this.remover(diretorio, e, nomeArquivo);
+				}
 			}
 		} else {
-			throw new ArquivoOuDiretorioNaoExisteException("O histórico não existe: "+idHhistorico);
-		}
-		return alvo;
+			throw new ArquivoOuDiretorioNaoExisteException("O diretorio não existe: "+estrutura.obterRaiz());
+		} 
+		
+		return arquivo;
 	}
 	
 	/**Recebe um diretório e sub-diretórios e retorna o caminho completo*/
@@ -177,7 +220,6 @@ public class BancoDeDadosGeRel {
 		for(int i = 1; i < caminho.length; i++) {
 			caminhoConstruido = caminhoConstruido.concat(File.separator+caminho[i]);
 		}
-		System.out.println("caminho construido: "+caminhoConstruido);
 		return caminhoConstruido;
 	}
 	

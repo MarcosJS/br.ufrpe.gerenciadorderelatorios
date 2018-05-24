@@ -1,18 +1,24 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class Estrutura {
+public class Estrutura extends Gravavel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 10992113208536148L;
 	private String raiz;
 	private ArrayList <Estrutura> subDiretorios;
 	
-	public Estrutura(String raiz, Estrutura[] subDiretorios) {
+	public Estrutura(String raiz, ArrayList<Estrutura> subDiretorios) {
 		this.definirRaiz(raiz);
 		this.definirSubDiretorios(subDiretorios);
 	}
 	
 	public void adicionar(Estrutura e) {
+		if(this.subDiretorios == null) {
+			this.definirSubDiretorios(new ArrayList <Estrutura> ());
+		}
 		this.subDiretorios.add(e);
 	}
 	
@@ -25,10 +31,19 @@ public class Estrutura {
 	}
 	
 	public Estrutura[] obterSubDiretorios() {
-		return subDiretorios.toArray(new Estrutura[subDiretorios.size()]);
+		Estrutura[] sub = null;
+		if(this.subDiretorios != null) {
+			sub = subDiretorios.toArray(new Estrutura[subDiretorios.size()]);
+		}
+		return sub;
 	}
 	
-	public void definirSubDiretorios(Estrutura[] subDiretorios) {
-		this.subDiretorios = new ArrayList <Estrutura>(Arrays.asList(subDiretorios));
+	public void definirSubDiretorios(ArrayList<Estrutura> subDiretorios) {
+		this.subDiretorios = subDiretorios;
+	}
+
+	@Override
+	public String obterId() {
+		return this.obterRaiz();
 	}
 }

@@ -9,7 +9,7 @@ public class Linha implements Serializable{
 	private static final long serialVersionUID = 4929477468964210438L;
 	private int posicaoOriginal;
 	private int posicaoPosAnalise;
-	private String idRelatorio;
+	private String Relatorio;
 	private boolean modificada;
 	private String linha;
 	private String modificacaoLinha;
@@ -36,12 +36,12 @@ public class Linha implements Serializable{
 		this.posicaoPosAnalise = posicao;
 	}
 	
-	public String getIdRelatorio() {
-		return idRelatorio;
+	public String getRelatorio() {
+		return Relatorio;
 	}
 	
-	public void setIdRelatorio(String idRelatorio) {
-		this.idRelatorio = idRelatorio;
+	public void setRelatorio(String idRelatorio) {
+		this.Relatorio = idRelatorio;
 	}
 	
 	public boolean isModificada() {
