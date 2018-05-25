@@ -7,16 +7,16 @@ public abstract class Gravavel implements Serializable {
 	 * 
 	 */
 	private static transient final long serialVersionUID = -4631082646531515126L;
-	private String Id;
+	private String id;
 	
 	public abstract String obterId();
 	
 	public void definirId(String id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String obtertId() {
-		return Id;
+		return id;
 	}
 	
 }

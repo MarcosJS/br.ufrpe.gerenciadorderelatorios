@@ -8,9 +8,10 @@ public class Estrutura extends Gravavel {
 	 */
 	private static final long serialVersionUID = 10992113208536148L;
 	private String raiz;
+	private String nomeArquivo;
 	private ArrayList <Estrutura> subDiretorios;
 	
-	public Estrutura(String raiz, ArrayList<Estrutura> subDiretorios) {
+	public Estrutura(String raiz, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
 		this.definirRaiz(raiz);
 		this.definirSubDiretorios(subDiretorios);
 	}
@@ -45,5 +46,13 @@ public class Estrutura extends Gravavel {
 	@Override
 	public String obterId() {
 		return this.obterRaiz();
+	}
+
+	public String obterNomeArquivo() {
+		return nomeArquivo;
+	}
+
+	public void definirNomeArquivo(String arquivo) {
+		this.nomeArquivo = arquivo;
 	}
 }

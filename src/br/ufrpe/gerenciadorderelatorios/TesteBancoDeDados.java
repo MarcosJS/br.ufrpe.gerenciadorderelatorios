@@ -12,7 +12,7 @@ public class TesteBancoDeDados {
 		BancoDeDadosGeRel bancoTeste = new BancoDeDadosGeRel();
 		bancoTeste.iniciarBancoDeDados(System.getProperty("user.dir"));
 		bancoTeste.toString();
-		Estrutura estr = new Estrutura("dir_estrutura_teste", null);
+		Estrutura estr = new Estrutura("dir_estrutura_teste", "nomeDaEstruturaTeste", null);
 		
 		try {
 			bancoTeste.adicionar(bancoTeste.obterBancoDeDados(), estr, estr);
@@ -21,7 +21,7 @@ public class TesteBancoDeDados {
 			e.printStackTrace();
 		}
 		System.out.println(estr.obterId());
-		Estrutura estrDes = (Estrutura) bancoTeste.consultar(bancoTeste.obterBancoDeDados(), estr, estr.obterId());
+		Estrutura estrDes = (Estrutura) bancoTeste.consultar(bancoTeste.obterBancoDeDados(), estr);
 		System.out.println("Arquivo antes da busca: "+estrDes.obterRaiz());
 		
 		System.out.println("fim");

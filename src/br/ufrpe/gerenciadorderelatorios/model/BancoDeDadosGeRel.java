@@ -22,12 +22,12 @@ public class BancoDeDadosGeRel {
 	/**Inicializa o banco de dados.*/
 	public void iniciarBancoDeDados(String raizBanco) {
 		/*Criando a estrutura de diretórios para o banco de dados.*/
-		this.definirEstrutura(new Estrutura(BANCO_DE_DADOS, null));
+		this.definirEstrutura(new Estrutura(BANCO_DE_DADOS, null, null));
 		
 		
 		
 		for(String nomeBanco: BANCOS) {
-			Estrutura banco = new Estrutura(nomeBanco, null);
+			Estrutura banco = new Estrutura(nomeBanco, null, null);
 			this.obterEstrutura().adicionar(banco);
 		}
 		
@@ -64,7 +64,7 @@ public class BancoDeDadosGeRel {
 			
 			/*Verificando se já esta no diretório correto para salvar.*/
 			if(estrutura.obterSubDiretorios() == null) {
-				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), gravavel.obterId()+".ser"});
+				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), estrutura.obterNomeArquivo()+".ser"});
 				File file = new File(caminhoArquivo);
 				
 				/*Verificando se o arquivo ainda não existe.*/
@@ -114,7 +114,7 @@ public class BancoDeDadosGeRel {
 	/**Remove o arquivo ou diretório especificado se houver.
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException*/
-	public void remover(File base, Estrutura estrutura , String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+	public void remover(File base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
 		String caminhoDiretorio =  this.construirCaminho(new String[] {base.getAbsolutePath(), estrutura.obterRaiz()});
 		File diretorio = new File(caminhoDiretorio);
 		
@@ -123,7 +123,7 @@ public class BancoDeDadosGeRel {
 			
 			/*Verificando se já é esta o diretório correto para exlusão.*/
 			if(estrutura.obterSubDiretorios() == null) {
-				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), nomeArquivo});
+				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), estrutura.obterNomeArquivo()});
 				File alvo = new File(caminhoArquivo);
 				
 				/*Verificando se o arquivo existe.*/
@@ -139,7 +139,7 @@ public class BancoDeDadosGeRel {
 				}
 			} else {
 				for(Estrutura e: estrutura.obterSubDiretorios()) {
-					this.remover(diretorio, e, nomeArquivo);
+					this.remover(diretorio, e);
 				}
 			}
 		} else {
@@ -150,7 +150,7 @@ public class BancoDeDadosGeRel {
 	/**Retorna o arquivo especificado se houver.
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException */
-	public Serializable consultar(File base, Estrutura estrutura , String nomeArquivo) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+	public Serializable consultar(File base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
 		Serializable arquivo = null;
 		File alvo = null;
 		String caminhoDiretorio =  this.construirCaminho(new String[] {base.getAbsolutePath(), estrutura.obterRaiz()});
@@ -161,7 +161,7 @@ public class BancoDeDadosGeRel {
 			
 			/*Verificando se já é esta o diretório correto para pesquisar o arquivo.*/
 			if(estrutura.obterSubDiretorios() == null) {
-				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), nomeArquivo});
+				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), estrutura.obterNomeArquivo()});
 				caminhoArquivo = caminhoArquivo.concat(".ser");
 				alvo = new File(caminhoArquivo);
 				
@@ -204,7 +204,7 @@ public class BancoDeDadosGeRel {
 				}
 			} else {
 				for(Estrutura e: estrutura.obterSubDiretorios()) {
-					this.remover(diretorio, e, nomeArquivo);
+					this.consultar(diretorio, e);
 				}
 			}
 		} else {
