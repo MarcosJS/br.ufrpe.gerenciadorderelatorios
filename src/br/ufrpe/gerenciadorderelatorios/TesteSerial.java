@@ -14,7 +14,7 @@ public class TesteSerial {
 
 		TesteSerial obj = new TesteSerial();
 
-		Estrutura estr = new Estrutura("testeSerial", null);
+		Estrutura estr = new Estrutura("testeSerial", "", null);
 
 		obj.serialize(estr);
 		

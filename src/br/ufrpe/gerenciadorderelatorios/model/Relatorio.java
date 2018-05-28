@@ -7,7 +7,7 @@ public class Relatorio extends Gravavel{
 	private static transient  final long serialVersionUID = -9063960994820430012L;
 	private Linha[] linhas;
 	private String historico;
-	//private int ordem;
+	private int ordem;
 	//private PerfilAnalise perfil;
 	
 	public Relatorio(Linha[] linhas) {
@@ -36,6 +36,23 @@ public class Relatorio extends Gravavel{
 
 	@Override
 	public String obterId() {
-		return super.obtertId();
+		return super.obterId();
 	}
+	
+	@Override
+	public void definirId(String id) {
+		super.definirId(id);
+		for(Linha l: this.linhas) {
+			l.definirRelatorio(this.obterId());
+		}
+	}
+
+	public int obterOrdem() {
+		return ordem;
+	}
+
+	public void definirOrdem(int ordem) {
+		this.ordem = ordem;
+	}
+
 }
