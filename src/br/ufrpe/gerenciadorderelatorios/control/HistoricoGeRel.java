@@ -10,6 +10,7 @@ public class HistoricoGeRel extends Gravavel{
 	/**
 	 * 
 	 */
+	private static transient int quantidadeHistoricos;
 	private static transient final long serialVersionUID = -1498544530598941169L;
 	private transient ArrayList<Relatorio> relatorios;
 	private transient int quantidadeRelatorios;
@@ -17,15 +18,16 @@ public class HistoricoGeRel extends Gravavel{
 	//private transient PerfilAnalise perfil;
 	
 	public HistoricoGeRel(Relatorio relatorio, String id) {
+		super.definirId(id);
 		this.definirRelatorios(new ArrayList<Relatorio>());
 		relatorio.definirHistorico(this.obterId());
-		//Converter quantidadeRelatorios em uma String de 4 digitos com zeros a esquerda e acrescentar a letra 'R' a esquerda
-		//relatorio.definirId(newId);
+		/*Acrescentando id do histórico ao relatório.*/
+		String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
+		relatorio.definirId(newId);
 		relatorio.definirOrdem(1);
 		this.adicionarRelatorio(relatorio);
 		this.quantidadeRelatorios = this.relatorios.size();
-		super.definirId(id);
-		
+		HistoricoGeRel.definirQuantidadeHistoricos(HistoricoGeRel.obterQuantidadeHistoricos() + 1);
 	}
 	
 	/**Adiciona um relatório ao histórico desde que aquele ainda não exista.
@@ -39,8 +41,9 @@ public class HistoricoGeRel extends Gravavel{
 			if(rel.obterHistorico() == null) {
 				rel.definirHistorico(this.obterId());
 			}
-			//Converter quantidadeRelatorios em uma String de 4 digitos com zeros a esquerda e acrescentar a letra 'R' a esquerda
-			//relatorio.definirId(newId);
+			/*Acrescentando id do histórico ao relatório.*/
+			String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
+			rel.definirId(newId);
 			this.relatorios.add(rel);
 		}
 	}
@@ -57,10 +60,6 @@ public class HistoricoGeRel extends Gravavel{
 		return relatorio;
 	}
 
-	public int obterQuantRelatorios() {
-		return this.obterRelatorios().size();
-	}
-	
 	public ArrayList<Relatorio> obterRelatorios() {
 		return relatorios;
 	}
@@ -76,6 +75,14 @@ public class HistoricoGeRel extends Gravavel{
 
 	public int obterQuantidadeRelatorios() {
 		return quantidadeRelatorios;
+	}
+
+	public static int obterQuantidadeHistoricos() {
+		return quantidadeHistoricos;
+	}
+
+	public static void definirQuantidadeHistoricos(int quantidadeHistoricos) {
+		HistoricoGeRel.quantidadeHistoricos = quantidadeHistoricos;
 	}
 
 }
