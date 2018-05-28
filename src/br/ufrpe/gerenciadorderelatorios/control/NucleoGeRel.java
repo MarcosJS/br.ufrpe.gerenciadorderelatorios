@@ -1,3 +1,4 @@
+/**Realiza a conversão dos arquivos para inicialização dos históricos de relatórios.*/
 package br.ufrpe.gerenciadorderelatorios.control;
 
 import java.io.File;
@@ -9,14 +10,16 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import br.ufrpe.gerenciadorderelatorios.model.*;
 
-public class ControleGeRelatorio {
+public class NucleoGeRel {
 	
 	public static final String CONSIG_ATUAL = null;
 	public static final int BANCO_BRASIL = 0;
+	
 	private Relatorio relatorio;
+	private HistoricoGeRel historico;
 	
 	/* Converte o arquivo para objeto Relatorio.*/
-	public void carregarRelatorio(File arquivo) throws InvalidPasswordException, IOException {
+	public void carregarRelatorioPdf(File arquivo) throws InvalidPasswordException, IOException {
 		PDDocument document = null;
         document = PDDocument.load(arquivo);
 	    PDFTextStripper stripper = new PDFTextStripper();
@@ -58,7 +61,7 @@ public class ControleGeRelatorio {
 		String[] linhasTexto = new String[this.relatorio.obterQuantLinhas()];
 		Linha[] linhas = this.relatorio.obterLinhas();
 		for(int i = 0; i < this.relatorio.obterQuantLinhas(); i++) {
-			linhasTexto[i] = linhas[i].getLinha();
+			linhasTexto[i] = linhas[i].obterLinha();
 		}
 		return linhasTexto;
 	}

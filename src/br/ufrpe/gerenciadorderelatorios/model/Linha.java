@@ -15,32 +15,32 @@ public class Linha implements Serializable{
 	private String modificacaoLinha;
 	
 	public Linha(String linha, int posicaOriginal, int posicaoPosAnalise) {
-		this.setLinha(linha);
-		this.setPosicaoOriginal(posicaOriginal);
-		this.setPosicaoPosAnalise(posicaoPosAnalise);
+		this.definirLinha(linha);
+		this.definirPosicaoOriginal(posicaOriginal);
+		this.definirPosicaoPosAnalise(posicaoPosAnalise);
 	}
 	
-	public int getPosicaoOriginal() {
+	public int obterPosicaoOriginal() {
 		return posicaoOriginal;
 	}
 	
-	private void setPosicaoOriginal(int posicao) {
+	private void definirPosicaoOriginal(int posicao) {
 		this.posicaoOriginal = posicao;
 	}
 	
-	public int getPosicaoPosAnalise() {
+	public int obterPosicaoPosAnalise() {
 		return posicaoPosAnalise;
 	}
 	
-	public void setPosicaoPosAnalise(int posicao) {
+	public void definirPosicaoPosAnalise(int posicao) {
 		this.posicaoPosAnalise = posicao;
 	}
 	
-	public String getRelatorio() {
+	public String obterRelatorio() {
 		return Relatorio;
 	}
 	
-	public void setRelatorio(String idRelatorio) {
+	public void definirRelatorio(String idRelatorio) {
 		this.Relatorio = idRelatorio;
 	}
 	
@@ -48,23 +48,23 @@ public class Linha implements Serializable{
 		return modificada;
 	}
 	
-	public void setModificada(boolean modificada) {
+	public void definirModificada(boolean modificada) {
 		this.modificada = modificada;
 	}
 	
-	public String getLinha() {
+	public String obterLinha() {
 		return linha;
 	}
 	
-	public void setLinha(String linha) {
+	public void definirLinha(String linha) {
 		this.linha = linha;
 	}
 	
-	public String getModificacaoLinha() {
+	public String obterModificacaoLinha() {
 		return modificacaoLinha;
 	}
 	
-	public void setModificacaoLinha(String modificacaoLinha) {
+	public void definirModificacaoLinha(String modificacaoLinha) {
 		this.modificacaoLinha = modificacaoLinha;
 	}
 }

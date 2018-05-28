@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
-import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -23,14 +23,14 @@ public class AbaSistema extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
 	private int tipo;	
-	private ControleGeRelatorio cGR;
+	private NucleoGeRel cGR;
 	private String relExibido[] = null;
 	private String cabecalho = null;
 	private String nomeArq = null;
 	private Color corFaixas;
 	private Color corSelecao;
 	
-	public AbaSistema(ControleGeRelatorio cGR, int tipo, Color corFaixas, Color corSelecao) {
+	public AbaSistema(NucleoGeRel cGR, int tipo, Color corFaixas, Color corSelecao) {
 		super();
 			
 		this.setBackground(Color.WHITE);
@@ -133,7 +133,7 @@ public class AbaSistema extends JPanel {
 		}
 	}
 	
-	public void setcGR(ControleGeRelatorio cGR) {
+	public void setcGR(NucleoGeRel cGR) {
 		this.cGR = cGR;
 	}
 	
