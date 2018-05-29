@@ -7,7 +7,7 @@ import java.awt.SystemColor;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 
 import javax.swing.JButton;
 
@@ -20,7 +20,7 @@ public class TelaPrincipal extends JFrame {
 	public TelaPrincipal() {
 		super();
 		
-		ControleGeRelatorio controle = new ControleGeRelatorio();
+		NucleoGeRel controle = new NucleoGeRel();
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	this.setSize(1136, 450);
@@ -34,7 +34,7 @@ public class TelaPrincipal extends JFrame {
     	PainelDeSelecaoDeArquivo arqBB = new PainelDeSelecaoDeArquivo(controle);
     	//SelArqPanelBra arqBra = new SelArqPanelBra(controle);
     	
-    	AbaSistema aba = new AbaSistema(controle, ControleGeRelatorio.BANCO_BRASIL, new Color(230, 230, 255), new Color(150,255, 150));
+    	AbaSistema aba = new AbaSistema(controle, NucleoGeRel.BANCO_BRASIL, new Color(230, 230, 255), new Color(150,255, 150));
     	//AbaSistema abaBra = new AbaSistema(controle, ControlDiff.BRADESCO, new Color(255, 230, 230), new Color(150, 150, 255));
     	
     	MenuSistema menuBB = new MenuSistema(controle, new Color(100, 149, 237), SystemColor.WHITE, arqBB, aba);

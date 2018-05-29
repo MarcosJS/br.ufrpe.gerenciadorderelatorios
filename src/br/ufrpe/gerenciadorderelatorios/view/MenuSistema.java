@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -20,7 +20,7 @@ public class MenuSistema extends JPanel {
 	//private SelArqPanel selArq;
 	private boolean estaCarregado = false;
 	
-	public MenuSistema(ControleGeRelatorio controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
+	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
 		this.setForeground(corFonteBotoes);

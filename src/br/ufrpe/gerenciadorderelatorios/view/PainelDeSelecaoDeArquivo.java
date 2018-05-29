@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
-import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 
 import java.io.File;
 
@@ -24,9 +24,9 @@ public class PainelDeSelecaoDeArquivo extends SelArqPanel{
 	private static final long serialVersionUID = 1L;
 	private File[] arquivo = new File[1];
 	JFileChooser explorador = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-	private ControleGeRelatorio sessaoGR;
+	private NucleoGeRel sessaoGR;
 
-	public PainelDeSelecaoDeArquivo(ControleGeRelatorio controle) {
+	public PainelDeSelecaoDeArquivo(NucleoGeRel controle) {
 		super();
 		
 		this.setOpaque(false);
@@ -192,7 +192,7 @@ public class PainelDeSelecaoDeArquivo extends SelArqPanel{
 		return resultado;
 	}
 	
-	public void setSessaoGR(ControleGeRelatorio sessao) {
+	public void setSessaoGR(NucleoGeRel sessao) {
 		this.sessaoGR = sessao;
 	}
 }

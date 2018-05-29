@@ -7,11 +7,11 @@ import javax.swing.text.BadLocationException;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
-import br.ufrpe.gerenciadorderelatorios.control.ControleGeRelatorio;
+import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 
 public class TesteGui {
 	public static void main(String[] args) throws InvalidPasswordException, IOException, BadLocationException {
-		ControleGeRelatorio control = new ControleGeRelatorio();
+		NucleoGeRel control = new NucleoGeRel();
 		File file = new File("C:\\testepdfbox\\consignadobb\\bbjan1.pdf");
 		control.carregarRelatorio(file);
 		/*String[] linhas = new String[control.getQuantLinhas()];
