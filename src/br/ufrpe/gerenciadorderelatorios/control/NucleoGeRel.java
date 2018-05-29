@@ -12,9 +12,6 @@ import br.ufrpe.gerenciadorderelatorios.model.*;
 
 public class NucleoGeRel {
 	
-	public static final String CONSIG_ATUAL = null;
-	public static final int BANCO_BRASIL = 0;
-	
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
 	
@@ -37,28 +34,38 @@ public class NucleoGeRel {
 	    
 	}
 
-	public String[] obterListaNovos(int tipo) {
+	public String[] obterNovos(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaExcluidos(int tipo) {
+	public String[] obterExcluidos(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaInalterados(int tipo) {
+	public String[] obterInalterados(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaConsignacoes(int tipo, String consigAtual) {
+	public String[] obterLista(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaTexto() {
-		String[] linhasTexto = new String[this.relatorio.obterQuantLinhas()];
+	public String[] obterRelatorio(int indice) {
+		Relatorio relatorio = this.historico.obterRelatorio(indice);
+		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
+		Linha[] linhas = relatorio.obterLinhas();
+		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
+			linhasTexto[i] = linhas[i].obterLinha();
+		}
+		return linhasTexto;
+	}
+	
+	public String[] obterRelatorio() {
+		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
 		Linha[] linhas = this.relatorio.obterLinhas();
 		for(int i = 0; i < this.relatorio.obterQuantLinhas(); i++) {
 			linhasTexto[i] = linhas[i].obterLinha();

@@ -21,12 +21,13 @@ public class HistoricoGeRel extends Gravavel{
 		super.definirId(id);
 		this.definirRelatorios(new ArrayList<Relatorio>());
 		relatorio.definirHistorico(this.obterId());
+		this.adicionarRelatorio(relatorio);
+		this.quantidadeRelatorios = this.relatorios.size();
+		
 		/*Acrescentando id do histórico ao relatório.*/
 		String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
 		relatorio.definirId(newId);
 		relatorio.definirOrdem(1);
-		this.adicionarRelatorio(relatorio);
-		this.quantidadeRelatorios = this.relatorios.size();
 		HistoricoGeRel.definirQuantidadeHistoricos(HistoricoGeRel.obterQuantidadeHistoricos() + 1);
 	}
 	
@@ -56,6 +57,15 @@ public class HistoricoGeRel extends Gravavel{
 					relatorio = r;
 				}
 			} 
+		}
+		return relatorio;
+	}
+	
+	/*Returna um relatrório da lista caso exista.*/
+	public Relatorio obterRelatorio(int indice) {
+		Relatorio relatorio = null;
+		if(indice > 0 && indice < this.obterQuantidadeRelatorios()) {
+			relatorio = this.relatorios.get(indice);
 		}
 		return relatorio;
 	}

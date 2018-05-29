@@ -22,7 +22,6 @@ public class AbaSistema extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
-	private int tipo;	
 	private NucleoGeRel cGR;
 	private String relExibido[] = null;
 	private String cabecalho = null;
@@ -86,8 +85,7 @@ public class AbaSistema extends JPanel {
 	public void renderizar(Relatorio rel) {
 		switch(rel) {
 		case RECENTE:
-			this.relExibido = cGR.obterListaTexto();
-			//this.relExibido = cGR.obterLista(this.tipo, ControleGeRelatorio.CONSIG_ATUAL);
+			this.relExibido = cGR.obterRelatorio(1);
 			this.cabecalho = "ULTIMO RELATORIO";
 			break;
 		/*case ANTERIORES:
@@ -95,15 +93,15 @@ public class AbaSistema extends JPanel {
 			this.cabecalho = "CONSIGNADOS DO MÊS ANTERIOR";
 			break;*/
 		case NOVOS:
-			this.relExibido = cGR.obterListaNovos(this.tipo);
+			this.relExibido = cGR.obterNovos(1);
 			this.cabecalho = "NOVOS";
 			break;
 		case EXCLUIDOS:
-			this.relExibido = cGR.obterListaExcluidos(this.tipo);
+			this.relExibido = cGR.obterExcluidos(1);
 			this.cabecalho = "EXCLUÍDOS";
 			break;
 		case INALTERADOS:
-			this.relExibido = cGR.obterListaInalterados(this.tipo);
+			this.relExibido = cGR.obterInalterados(1);
 			this.cabecalho = "INALTERADOS";
 			break;
 		default:
