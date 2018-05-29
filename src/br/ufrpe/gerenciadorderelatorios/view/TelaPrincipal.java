@@ -9,8 +9,6 @@ import javax.swing.JTabbedPane;
 
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 
-import javax.swing.JButton;
-
 public class TelaPrincipal extends JFrame {
 	/**
 	 * 
@@ -23,7 +21,7 @@ public class TelaPrincipal extends JFrame {
 		NucleoGeRel controle = new NucleoGeRel();
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	this.setSize(1136, 450);
+    	this.setSize(1280, 768);
     	this.setTitle("Ge Relatorio");
     	this.getContentPane().setLayout(new CardLayout(0, 0));
     	
@@ -31,27 +29,22 @@ public class TelaPrincipal extends JFrame {
     	abas.setBackground(Color.WHITE);
     	this.getContentPane().add(abas, "name_15804303378159");
     	
-    	PainelDeSelecaoDeArquivo arqBB = new PainelDeSelecaoDeArquivo(controle);
-    	//SelArqPanelBra arqBra = new SelArqPanelBra(controle);
+    	PainelDeSelecaoDeArquivo PainelArq = new PainelDeSelecaoDeArquivo(controle);
     	
-    	AbaSistema aba = new AbaSistema(controle, NucleoGeRel.BANCO_BRASIL, new Color(230, 230, 255), new Color(150,255, 150));
-    	//AbaSistema abaBra = new AbaSistema(controle, ControlDiff.BRADESCO, new Color(255, 230, 230), new Color(150, 150, 255));
+    	SaidaSistema aba = new SaidaSistema(controle, new Color(230, 230, 255), new Color(150,255, 150));
     	
-    	MenuSistema menuBB = new MenuSistema(controle, new Color(100, 149, 237), SystemColor.WHITE, arqBB, aba);
-    	//MenuSistema menuBra = new MenuSistema(controle, SystemColor.RED, SystemColor.WHITE, arqBra, abaBra);
+    	MenuSistema menu = new MenuSistema(/*controle, */new Color(100, 149, 237), SystemColor.WHITE, PainelArq, aba);
     	
-    	//menuBra.setBackground(SystemColor.WHITE);  	
+    	aba.add(menu);
     	
-    	aba.add(menuBB);
-    	//abaBra.add(menuBra);
     	abas.addTab("Relatorio", null, aba, null);
     	
-    	JButton bSalvar = new JButton("Salvar");
+    	/*JButton bSalvar = new JButton("Salvar");
     	bSalvar.setToolTipText("Salva documento em formato pdf");
     	bSalvar.setBackground(new Color(100, 149, 237));
     	bSalvar.setForeground(Color.WHITE);
     	bSalvar.setBounds(690, 0, 89, 23);
-    	aba.add(bSalvar);
+    	aba.add(bSalvar);*/
     	//abas.addTab("Bradesco", null, abaBra, null);
 	}
 	

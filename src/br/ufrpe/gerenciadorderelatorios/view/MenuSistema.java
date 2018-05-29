@@ -20,11 +20,11 @@ public class MenuSistema extends JPanel {
 	//private SelArqPanel selArq;
 	private boolean estaCarregado = false;
 	
-	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
+	public MenuSistema(/*NucleoGeRel controle, */Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, SaidaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
 		this.setForeground(corFonteBotoes);
-    	this.setBounds(0, 0, 319, 398);
+    	this.setBounds(0, 0, 319, 703);
     	this.setBackground(new Color(255, 255, 102));
     	this.setLayout(null);
     	
@@ -53,7 +53,7 @@ public class MenuSistema extends JPanel {
     	btnMostrarAtual.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.RECENTE);
+					saida.renderizar(SaidaSistema.Relatorio.RECENTE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -70,7 +70,7 @@ public class MenuSistema extends JPanel {
     	btnMostrarMsAnterior.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.ANTERIORES);
+					saida.renderizar(SaidaSistema.Relatorio.ANTERIORES);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -87,7 +87,7 @@ public class MenuSistema extends JPanel {
     	btnNovos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.NOVOS);
+					saida.renderizar(SaidaSistema.Relatorio.NOVOS);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -104,7 +104,7 @@ public class MenuSistema extends JPanel {
     	btnExcludos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.EXCLUIDOS);
+					saida.renderizar(SaidaSistema.Relatorio.EXCLUIDOS);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -121,7 +121,7 @@ public class MenuSistema extends JPanel {
     	btnInalterado.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.INALTERADOS);
+					saida.renderizar(SaidaSistema.Relatorio.INALTERADOS);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}

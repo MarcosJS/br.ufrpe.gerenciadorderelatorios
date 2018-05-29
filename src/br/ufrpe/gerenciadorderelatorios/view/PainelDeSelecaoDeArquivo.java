@@ -179,7 +179,7 @@ public class PainelDeSelecaoDeArquivo extends SelArqPanel{
 			//int[] inicioApos = {7, 7, 7, 7};
 			//int[] fimAntes = {6, 5, 6, 5};
 			try {
-				sessaoGR.carregarRelatorio(arquivo[0]);
+				sessaoGR.carregarRelatorioPdf(arquivo[0]);
 			} catch (Exception e) {
 				resultado = false;
 				JOptionPane.showMessageDialog(null, "Erro no carregamento dos arquivos!", "Erro", JOptionPane.ERROR_MESSAGE);

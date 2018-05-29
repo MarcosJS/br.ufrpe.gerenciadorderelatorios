@@ -12,8 +12,13 @@ import javax.swing.text.BadLocationException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+import java.awt.Component;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JLayeredPane;
 
-public class AbaSistema extends JPanel {
+public class SaidaSistema extends JPanel {
 	public static enum Relatorio {
 		RECENTE, ANTERIORES, NOVOS, EXCLUIDOS, INALTERADOS;
 	}
@@ -22,7 +27,6 @@ public class AbaSistema extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
-	private int tipo;	
 	private NucleoGeRel cGR;
 	private String relExibido[] = null;
 	private String cabecalho = null;
@@ -30,21 +34,22 @@ public class AbaSistema extends JPanel {
 	private Color corFaixas;
 	private Color corSelecao;
 	
-	public AbaSistema(NucleoGeRel cGR, int tipo, Color corFaixas, Color corSelecao) {
+	public SaidaSistema(NucleoGeRel cGR, Color corFaixas, Color corSelecao) {
 		super();
-			
+		this.setBounds(0, 0, 1264, 750);
 		this.setBackground(Color.WHITE);
 		this.setLayout(null);
 		
 		JPanel saida = new JPanel();
-		saida.setBounds(318, 0, 850, 398);
+		saida.setBounds(318, 0, 946, 703);
 		saida.setBackground(Color.WHITE);
 		this.add(saida);
 		saida.setLayout(null);
 		
 		JPanel panel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		panel.setOpaque(false);
-		panel.setBounds(703, 5, 73, 33);
+		panel.setBounds(850, 5, 73, 33);
 		saida.add(panel);
 		
 		JButton bSalvar = new JButton("Salvar");
@@ -72,13 +77,16 @@ public class AbaSistema extends JPanel {
 		bSalvar.setToolTipText("Salva documento em formato pdf");
 		bSalvar.setBackground(new Color(100, 149, 237));
 		bSalvar.setForeground(Color.WHITE);
+		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{bSalvar}));
 		
 		this.scrollPane = new JScrollPane();
-		scrollPane.setBackground(Color.WHITE);
-		scrollPane.setBounds(0, 0, 850, 398);
+		scrollPane.setEnabled(false);
+		scrollPane.setBackground(Color.BLUE);
+		scrollPane.setBounds(0, 0, 943, 703);
 		saida.add(scrollPane);
+		saida.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{panel, bSalvar, scrollPane}));
+		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{bSalvar, panel, scrollPane, saida}));
 		this.setcGR(cGR);
-		this.setTipo(tipo);
 		this.setCorFaixas(corFaixas);
 		this.setCorSelecao(corSelecao);
 }
@@ -87,7 +95,6 @@ public class AbaSistema extends JPanel {
 		switch(rel) {
 		case RECENTE:
 			this.relExibido = cGR.obterListaTexto();
-			//this.relExibido = cGR.obterLista(this.tipo, ControleGeRelatorio.CONSIG_ATUAL);
 			this.cabecalho = "ULTIMO RELATORIO";
 			break;
 		/*case ANTERIORES:
@@ -95,15 +102,15 @@ public class AbaSistema extends JPanel {
 			this.cabecalho = "CONSIGNADOS DO MÊS ANTERIOR";
 			break;*/
 		case NOVOS:
-			this.relExibido = cGR.obterListaNovos(this.tipo);
+			this.relExibido = cGR.obterListaNovos();
 			this.cabecalho = "NOVOS";
 			break;
 		case EXCLUIDOS:
-			this.relExibido = cGR.obterListaExcluidos(this.tipo);
+			this.relExibido = cGR.obterListaExcluidos();
 			this.cabecalho = "EXCLUÍDOS";
 			break;
 		case INALTERADOS:
-			this.relExibido = cGR.obterListaInalterados(this.tipo);
+			this.relExibido = cGR.obterListaInalterados();
 			this.cabecalho = "INALTERADOS";
 			break;
 		default:
@@ -137,10 +144,6 @@ public class AbaSistema extends JPanel {
 		this.cGR = cGR;
 	}
 	
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
 	public void setCorFaixas(Color corFaixas) {
 		this.corFaixas = corFaixas;
 	}
@@ -148,5 +151,4 @@ public class AbaSistema extends JPanel {
 	public void setCorSelecao(Color corSelecao) {
 		this.corSelecao = corSelecao;
 	}
-
 }

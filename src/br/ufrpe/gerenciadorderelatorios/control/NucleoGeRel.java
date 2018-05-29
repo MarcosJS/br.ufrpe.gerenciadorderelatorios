@@ -12,9 +12,6 @@ import br.ufrpe.gerenciadorderelatorios.model.*;
 
 public class NucleoGeRel {
 	
-	public static final String CONSIG_ATUAL = null;
-	public static final int BANCO_BRASIL = 0;
-	
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
 	
@@ -37,22 +34,22 @@ public class NucleoGeRel {
 	    
 	}
 
-	public String[] obterListaNovos(int tipo) {
+	public String[] obterListaNovos() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaExcluidos(int tipo) {
+	public String[] obterListaExcluidos() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaInalterados(int tipo) {
+	public String[] obterListaInalterados() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaConsignacoes(int tipo, String consigAtual) {
+	public String[] obterListaConsignacoes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
