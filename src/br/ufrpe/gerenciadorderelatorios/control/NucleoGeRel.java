@@ -1,4 +1,4 @@
-/**Realiza a conversão dos arquivos para inicialização dos históricos de relatórios.*/
+/***/
 package br.ufrpe.gerenciadorderelatorios.control;
 
 import java.io.File;
@@ -15,6 +15,11 @@ public class NucleoGeRel {
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
 	
+	public NucleoGeRel() {
+		this.historico = new HistoricoGeRel();
+		this.historico.definirId("h0001");
+	}
+	
 	/* Converte o arquivo para objeto Relatorio.*/
 	public void carregarRelatorioPdf(File arquivo) throws InvalidPasswordException, IOException {
 		PDDocument document = null;
@@ -28,34 +33,50 @@ public class NucleoGeRel {
 	    	linhasRel[i] = new Linha(pdfLinhas[i], i, i);
 	    }
 	    
-	    this.relatorio = new Relatorio(linhasRel);
+	    //this.relatorio = new Relatorio(linhasRel);
+	    Relatorio relatorio = new Relatorio(linhasRel);
+	    this.adicionarRelatorio(relatorio);
 	    
 	    document.close();
 	    
 	}
+	
+	public void adicionarRelatorio(Relatorio rel) {
+		this.historico.adicionarRelatorio(rel);
+	}
 
-	public String[] obterListaNovos() {
+	public String[] obterIncluidos(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaExcluidos() {
+	public String[] obterExcluidos(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaInalterados() {
+	public String[] obterInalterados(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaConsignacoes() {
+	public String[] obterLista(int indice) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String[] obterListaTexto() {
-		String[] linhasTexto = new String[this.relatorio.obterQuantLinhas()];
+	public String[] obterRelatorio(int indice) {
+		Relatorio relatorio = this.historico.obterRelatorio(indice);
+		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
+		Linha[] linhas = relatorio.obterLinhas();
+		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
+			linhasTexto[i] = linhas[i].obterLinha();
+		}
+		return linhasTexto;
+	}
+	
+	public String[] obterRelatorio() {
+		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
 		Linha[] linhas = this.relatorio.obterLinhas();
 		for(int i = 0; i < this.relatorio.obterQuantLinhas(); i++) {
 			linhasTexto[i] = linhas[i].obterLinha();
@@ -63,4 +84,7 @@ public class NucleoGeRel {
 		return linhasTexto;
 	}
 	
+	public int obterQuantidadeRelatorios() {
+		return this.historico.obterQuantidadeRelatorios();
+	}
 }

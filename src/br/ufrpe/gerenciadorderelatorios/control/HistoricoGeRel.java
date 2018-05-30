@@ -10,37 +10,24 @@ public class HistoricoGeRel extends Gravavel{
 	/**
 	 * 
 	 */
-	private static transient int quantidadeHistoricos;
 	private static transient final long serialVersionUID = -1498544530598941169L;
 	private transient ArrayList<Relatorio> relatorios;
-	private transient int quantidadeRelatorios;
-		
 	//private transient PerfilAnalise perfil;
 	
-	public HistoricoGeRel(Relatorio relatorio, String id) {
-		super.definirId(id);
-		this.definirRelatorios(new ArrayList<Relatorio>());
-		relatorio.definirHistorico(this.obterId());
-		/*Acrescentando id do histórico ao relatório.*/
-		String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
-		relatorio.definirId(newId);
-		relatorio.definirOrdem(1);
-		this.adicionarRelatorio(relatorio);
-		this.quantidadeRelatorios = this.relatorios.size();
-		HistoricoGeRel.definirQuantidadeHistoricos(HistoricoGeRel.obterQuantidadeHistoricos() + 1);
+	public HistoricoGeRel() {
+		this.relatorios = new ArrayList<Relatorio>();
 	}
 	
 	/**Adiciona um relatório ao histórico desde que aquele ainda não exista.
 	 * @author Marcos Jose*/
 	public void adicionarRelatorio(Relatorio rel) {
-		/*Verifica se o a lista de relatorios não é nula e se ainda não existe o relatório.*/
-		if((relatorios != null) && (this.ConsultarRelatorio(rel.obterId()) == null)) {
-			if(rel.obterOrdem() == 0) {
-				rel.definirOrdem(++this.quantidadeRelatorios);
-			}
+		/*Verifica se o relatória não esta na lista.*/
+		if(this.ConsultarRelatorio(rel.obterId()) == null) {
 			if(rel.obterHistorico() == null) {
+				/*Apontando para o histórico para qual foi adicionado.*/
 				rel.definirHistorico(this.obterId());
 			}
+			
 			/*Acrescentando id do histórico ao relatório.*/
 			String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
 			rel.definirId(newId);
@@ -59,6 +46,15 @@ public class HistoricoGeRel extends Gravavel{
 		}
 		return relatorio;
 	}
+	
+	/*Returna um relatrório da lista caso exista.*/
+	public Relatorio obterRelatorio(int indice) {
+		Relatorio relatorio = null;
+		if(indice >= 0 && indice < this.obterQuantidadeRelatorios()) {
+			relatorio = this.relatorios.get(indice);
+		}
+		return relatorio;
+	}
 
 	public ArrayList<Relatorio> obterRelatorios() {
 		return relatorios;
@@ -74,15 +70,6 @@ public class HistoricoGeRel extends Gravavel{
 	}
 
 	public int obterQuantidadeRelatorios() {
-		return quantidadeRelatorios;
+		return this.relatorios.size();
 	}
-
-	public static int obterQuantidadeHistoricos() {
-		return quantidadeHistoricos;
-	}
-
-	public static void definirQuantidadeHistoricos(int quantidadeHistoricos) {
-		HistoricoGeRel.quantidadeHistoricos = quantidadeHistoricos;
-	}
-
 }

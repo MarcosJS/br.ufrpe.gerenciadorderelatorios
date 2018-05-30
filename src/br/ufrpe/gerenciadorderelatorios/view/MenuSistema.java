@@ -53,7 +53,8 @@ public class MenuSistema extends JPanel {
     	btnMostrarAtual.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(SaidaSistema.Relatorio.RECENTE);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.COMPLETO);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -70,7 +71,7 @@ public class MenuSistema extends JPanel {
     	btnMostrarMsAnterior.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(SaidaSistema.Relatorio.ANTERIORES);
+					//saida.renderizar(SaidaSistema.Relatorio.ANTERIORES);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -87,7 +88,8 @@ public class MenuSistema extends JPanel {
     	btnNovos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(SaidaSistema.Relatorio.NOVOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INCLUIDOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -104,7 +106,8 @@ public class MenuSistema extends JPanel {
     	btnExcludos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(SaidaSistema.Relatorio.EXCLUIDOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.EXCLUIDOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -121,7 +124,8 @@ public class MenuSistema extends JPanel {
     	btnInalterado.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(SaidaSistema.Relatorio.INALTERADOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INALTERADOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}

@@ -11,21 +11,21 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import java.awt.Component;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JLayeredPane;
+import javax.swing.JMenuBar;
 
 public class SaidaSistema extends JPanel {
-	public static enum Relatorio {
-		RECENTE, ANTERIORES, NOVOS, EXCLUIDOS, INALTERADOS;
+	public static enum TipoRelatorio {
+		COMPLETO, INCLUIDOS, EXCLUIDOS, INALTERADOS;
 	}
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private TipoRelatorio tipoRelatorio;
+	private int indice;
 	private JScrollPane scrollPane;
 	private NucleoGeRel cGR;
 	private String relExibido[] = null;
@@ -41,19 +41,53 @@ public class SaidaSistema extends JPanel {
 		this.setLayout(null);
 		
 		JPanel saida = new JPanel();
-		saida.setBounds(318, 0, 946, 703);
+		saida.setBounds(318, 0, 943, 703);
 		saida.setBackground(Color.WHITE);
 		this.add(saida);
 		saida.setLayout(null);
 		
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setVgap(2);
 		panel.setOpaque(false);
-		panel.setBounds(850, 5, 73, 33);
+		panel.setBounds(0, 649, 943, 27);
 		saida.add(panel);
 		
-		JButton bSalvar = new JButton("Salvar");
-		bSalvar.addActionListener(new ActionListener() {
+		JMenuBar menuBar = new JMenuBar();
+		panel.add(menuBar);
+		
+		JButton bAnterior = new JButton("Anterior");
+		bAnterior.setToolTipText("Relat\u00F3rio anterior");
+		bAnterior.setForeground(Color.WHITE);
+		bAnterior.setBackground(new Color(100, 149, 237));
+		bAnterior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(obterIndice() > 0) {
+					definirIndice(obterIndice() - 1);
+					renderizarRelatorio();
+				}
+			}
+		});
+		menuBar.add(bAnterior);
+		
+		JButton bProximo = new JButton("Pr\u00F3ximo");
+		bProximo.setToolTipText("Pr\u00F3ximo relat\u00F3rio");
+		bProximo.setForeground(Color.WHITE);
+		bProximo.setBackground(new Color(100, 149, 237));
+		bProximo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(obterIndice() < (cGR.obterQuantidadeRelatorios()) - 1){
+					System.out.println(cGR.obterQuantidadeRelatorios());
+					definirIndice(obterIndice() + 1);
+					renderizarRelatorio();
+				}
+			}
+		});
+		menuBar.add(bProximo);
+		
+		JButton bSalvarComoPDF = new JButton("Salvar como PDF");
+		menuBar.add(bSalvarComoPDF);
+		bSalvarComoPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(relExibido != null) {
 					JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -64,7 +98,7 @@ public class SaidaSistema extends JPanel {
 					if (returnValue == JFileChooser.APPROVE_OPTION) {
 						if (jfc.getSelectedFile().isDirectory()) {
 							String local = jfc.getSelectedFile().getAbsolutePath();
-							local = local.concat("\\");
+							local = local.concat(File.pathSeparator);
 							salvarRelExibido(local);
 						}
 					}
@@ -73,45 +107,50 @@ public class SaidaSistema extends JPanel {
 				}
 			}
 		});
-		panel.add(bSalvar);
-		bSalvar.setToolTipText("Salva documento em formato pdf");
-		bSalvar.setBackground(new Color(100, 149, 237));
-		bSalvar.setForeground(Color.WHITE);
-		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{bSalvar}));
+		bSalvarComoPDF.setToolTipText("Salva o documento em formato pdf");
+		bSalvarComoPDF.setBackground(new Color(100, 149, 237));
+		bSalvarComoPDF.setForeground(Color.WHITE);
 		
 		this.scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
 		scrollPane.setBackground(Color.BLUE);
-		scrollPane.setBounds(0, 0, 943, 703);
+		scrollPane.setBounds(0, 0, 943, 650);
 		saida.add(scrollPane);
-		saida.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{panel, bSalvar, scrollPane}));
-		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{bSalvar, panel, scrollPane, saida}));
 		this.setcGR(cGR);
 		this.setCorFaixas(corFaixas);
 		this.setCorSelecao(corSelecao);
+		
+		/*Indice.*/
+		this.definirIndice(0);
 }
+	public void definirTipoRelatorio(TipoRelatorio tipo) {
+		this.tipoRelatorio = tipo;
+	}
 	
-	public void renderizar(Relatorio rel) {
-		switch(rel) {
-		case RECENTE:
-			this.relExibido = cGR.obterListaTexto();
-			this.cabecalho = "ULTIMO RELATORIO";
+	public int obterIndice() {
+		return indice;
+	}
+	public void definirIndice(int i) {
+		this.indice = i;
+	}
+	
+	public void renderizarRelatorio() {
+		switch(this.tipoRelatorio) {
+		case COMPLETO:
+			this.relExibido = cGR.obterRelatorio(this.indice);
+			this.cabecalho = "RELATÓRIO COMPLETO";
 			break;
-		/*case ANTERIORES:
-			this.relExibido = cGR.obterListaConsignacoes(this.tipo, ControlDiff.CONSIG_ANTERIOR);
-			this.cabecalho = "CONSIGNADOS DO MÊS ANTERIOR";
-			break;*/
-		case NOVOS:
-			this.relExibido = cGR.obterListaNovos();
-			this.cabecalho = "NOVOS";
+		case INCLUIDOS:
+			this.relExibido = cGR.obterIncluidos(this.indice);
+			this.cabecalho = "ÍTENS INCLUÍDOS NO RELATRIO";
 			break;
 		case EXCLUIDOS:
-			this.relExibido = cGR.obterListaExcluidos();
-			this.cabecalho = "EXCLUÍDOS";
+			this.relExibido = cGR.obterExcluidos(this.indice);
+			this.cabecalho = "ÍTENS EXCLUÍDOS DO RELATÓRIO";
 			break;
 		case INALTERADOS:
-			this.relExibido = cGR.obterListaInalterados();
-			this.cabecalho = "INALTERADOS";
+			this.relExibido = cGR.obterInalterados(this.indice);
+			this.cabecalho = "ÍTENS INALTERADOS NO RELATÓRIO";
 			break;
 		default:
 			break;
@@ -127,7 +166,7 @@ public class SaidaSistema extends JPanel {
 			JOptionPane.showMessageDialog(null, "Falha na renderização dos consignados!", "Erro", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
-		this.nomeArq = rel.toString();
+		this.nomeArq = this.tipoRelatorio.toString();
 	}
 	
 	private void salvarRelExibido(String local) {

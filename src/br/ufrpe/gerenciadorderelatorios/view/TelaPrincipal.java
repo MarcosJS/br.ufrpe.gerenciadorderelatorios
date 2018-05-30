@@ -38,14 +38,6 @@ public class TelaPrincipal extends JFrame {
     	aba.add(menu);
     	
     	abas.addTab("Relatorio", null, aba, null);
-    	
-    	/*JButton bSalvar = new JButton("Salvar");
-    	bSalvar.setToolTipText("Salva documento em formato pdf");
-    	bSalvar.setBackground(new Color(100, 149, 237));
-    	bSalvar.setForeground(Color.WHITE);
-    	bSalvar.setBounds(690, 0, 89, 23);
-    	aba.add(bSalvar);*/
-    	//abas.addTab("Bradesco", null, abaBra, null);
 	}
 	
 	public void renderizar() {
