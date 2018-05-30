@@ -49,8 +49,8 @@ public class MenuSistema extends JPanel {
     	btnNewButton.setBounds(10, 176, 91, 23);
     	this.add(btnNewButton);
     	
-    	JButton btnMostrarAtual = new JButton("M\u00CAS ATUAL");
-    	btnMostrarAtual.addActionListener(new ActionListener() {
+    	JButton btnRelatorioCompleto = new JButton("RELAT\u00D3RIO COMPLETO");
+    	btnRelatorioCompleto.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
     				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.COMPLETO);
@@ -60,15 +60,15 @@ public class MenuSistema extends JPanel {
 				}
     		}
     	});
-    	btnMostrarAtual.setForeground(corFonteBotoes);
-    	btnMostrarAtual.setBackground(corFundoBotoes);
-    	btnMostrarAtual.setToolTipText("Clique para exibir consignados do m\u00EAs atual.");
-    	btnMostrarAtual.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	btnMostrarAtual.setBounds(66, 226, 182, 23);
-    	this.add(btnMostrarAtual);
+    	btnRelatorioCompleto.setForeground(corFonteBotoes);
+    	btnRelatorioCompleto.setBackground(corFundoBotoes);
+    	btnRelatorioCompleto.setToolTipText("Clique para exibir o relat\u00F3rio completo.");
+    	btnRelatorioCompleto.setFont(new Font("Tahoma", Font.BOLD, 10));
+    	btnRelatorioCompleto.setBounds(66, 226, 182, 23);
+    	this.add(btnRelatorioCompleto);
     	
-    	JButton btnMostrarMsAnterior = new JButton("M\u00CAS ANTERIOR");
-    	btnMostrarMsAnterior.addActionListener(new ActionListener() {
+    	JButton btnSalvarRelatorios = new JButton("SALVAR RELAT\u00D3RIOS");
+    	btnSalvarRelatorios.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
 					//saida.renderizar(SaidaSistema.Relatorio.ANTERIORES);
@@ -77,12 +77,12 @@ public class MenuSistema extends JPanel {
 				}
     		}
     	});
-    	btnMostrarMsAnterior.setForeground(corFonteBotoes);
-    	btnMostrarMsAnterior.setBackground(corFundoBotoes);
-    	btnMostrarMsAnterior.setToolTipText("Clique para exibir consignados do m\u00EAs anterior.");
-    	btnMostrarMsAnterior.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	btnMostrarMsAnterior.setBounds(66, 260, 182, 23);
-    	this.add(btnMostrarMsAnterior);
+    	btnSalvarRelatorios.setForeground(corFonteBotoes);
+    	btnSalvarRelatorios.setBackground(corFundoBotoes);
+    	btnSalvarRelatorios.setToolTipText("Clique para salvar os relat\u00F3rios no banco de dados.");
+    	btnSalvarRelatorios.setFont(new Font("Tahoma", Font.BOLD, 10));
+    	btnSalvarRelatorios.setBounds(66, 260, 182, 23);
+    	this.add(btnSalvarRelatorios);
     	
     	JButton btnNovos = new JButton("NOVOS");
     	btnNovos.addActionListener(new ActionListener() {

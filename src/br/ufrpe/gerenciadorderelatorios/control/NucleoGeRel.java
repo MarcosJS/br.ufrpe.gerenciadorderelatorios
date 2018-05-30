@@ -3,21 +3,49 @@ package br.ufrpe.gerenciadorderelatorios.control;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 import br.ufrpe.gerenciadorderelatorios.model.*;
 
 public class NucleoGeRel {
 	
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
+	private BancoDeDadosGeRel bancoTeste;
+	private Estrutura bdHistoricos = new Estrutura(BancoDeDadosGeRel.BD_HISTORICOS, null, null);
+	private Estrutura bdaceso = new Estrutura(BancoDeDadosGeRel.BD_ACESSO, null, null);
 	
 	public NucleoGeRel() {
 		this.historico = new HistoricoGeRel();
 		this.historico.definirId("h0001");
+		this.bancoTeste = new BancoDeDadosGeRel();
+		bancoTeste.iniciarBancoDeDados(System.getProperty("user.dir"));
+		
+	}
+	
+	public void armazenarHistorico() {
+		try {
+			/*Salvando os historicos.*/
+			String[] camHistorico = {this.historico.obterId()};
+			Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historico.obterId()+".ser");
+			this.bancoTeste.adicionar(this.bdHistoricos, estHistorico, this.historico);
+			
+			for(Relatorio r: this.historico.obterListaRelatorios()) {
+				/*Salvando os relatorios.*/
+				String[] camRelatorio = {this.historico.obterId(), "rel"};
+				Estrutura estRelatorio = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camRelatorio)), r.obterId()+".ser");
+				this.bancoTeste.adicionar(this.bdHistoricos, estRelatorio, r);
+			}
+		} catch (JaExisteArquivoOuDiretorioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/* Converte o arquivo para objeto Relatorio.*/

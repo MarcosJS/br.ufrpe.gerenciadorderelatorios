@@ -120,8 +120,9 @@ public class BancoDeDadosGeRel {
 	/**Remove o arquivo ou diretório especificado se houver.
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException*/
-	public void remover(File base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
-		String caminhoDiretorio =  this.construirCaminho(new String[] {base.getAbsolutePath(), estrutura.obterRaiz()});
+	public void remover(Estrutura base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+		base.adicionarNaPonta(new Estrutura(estrutura.obterRaiz(), estrutura.obterNomeArquivo(), null));
+		String caminhoDiretorio =  this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), base.obterCaminho()});
 		File diretorio = new File(caminhoDiretorio);
 		
 		/*Verificando se o diretório existe*/
@@ -135,9 +136,12 @@ public class BancoDeDadosGeRel {
 				/*Verificando se o arquivo existe.*/
 				if(alvo.exists()) {
 					System.out.println("Arquivo a ser deletado: "+estrutura.obterNomeArquivo());
+					
 					/*Deletando o arquivo ou diretório.*/
 					if(!alvo.delete()) {
 						throw new ExclusaoDeArquivoOuDiretorioNegadaException("Permissao para excluir o arquivo ou diretório negada: "+alvo.getName());
+					} else {
+						this.removerDoIndice(base);
 					}
 					
 				} else {
@@ -145,7 +149,7 @@ public class BancoDeDadosGeRel {
 				}
 			} else {
 				for(Estrutura e: estrutura.obterSubDiretorios()) {
-					this.remover(diretorio, e);
+					this.remover(base, e);
 				}
 			}
 		} else {

@@ -60,6 +60,10 @@ public class HistoricoGeRel extends Gravavel{
 		return relatorios;
 	}
 	
+	public Relatorio[] obterListaRelatorios() {
+		return this.relatorios.toArray(new Relatorio[relatorios.size()]);
+	}
+	
 	public void definirRelatorios(ArrayList<Relatorio> relatorios) {
 		this.relatorios = relatorios;
 	}
