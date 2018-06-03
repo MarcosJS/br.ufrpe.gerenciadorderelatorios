@@ -41,7 +41,7 @@ public class SaidaSistema extends JPanel {
 		this.setLayout(null);
 		
 		JPanel saida = new JPanel();
-		saida.setBounds(318, 0, 943, 703);
+		saida.setBounds(318, 0, 943, 677);
 		saida.setBackground(Color.WHITE);
 		this.add(saida);
 		saida.setLayout(null);

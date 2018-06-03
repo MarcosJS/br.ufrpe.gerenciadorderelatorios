@@ -1,5 +1,6 @@
 package br.ufrpe.gerenciadorderelatorios;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -16,11 +17,31 @@ public class TesteBancoDeDados {
 		bancoTeste.iniciarBancoDeDados(System.getProperty("user.dir"));
 		bancoTeste.toString();
 		
-		String[] pastas = {BancoDeDadosGeRel.BD_HISTORICOS, "dir_estrutura_teste"};
 		String[] pastas2 = {BancoDeDadosGeRel.BD_ACESSO, "dir_estrutura", "pasta_1", "pasta_2", "pasta_final"};
-		Estrutura estr = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(pastas)), "nomeDoArquivoTeste.ser");
 		Estrutura est2 = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(pastas2)), "funcaoMontarEstrutura.ser");
-		System.out.println(est2.obterCaminho());		
+		Estrutura est = null;
+		while(est2 != null) {
+			System.out.println("diretorio atual: "+est2.obterDiretorioAtual());
+			System.out.println("caminho ate o ancestral: "+est2.obterCaminhoAncestrais());
+			if(est2.obterPai() == null) {
+				System.out.println("pai: "+est2.obterPai());
+			} else {
+				System.out.println("pai: "+est2.obterPai().obterDiretorioAtual());
+			}
+			
+			if(est2.obterListaSubDiretorios() != null) {
+				est2 = est2.obterListaSubDiretorios()[0];
+			} else {
+				est = est2;
+				est2 = null;
+			}
+		}
+		System.out.println("diretorio atual da est: "+est.obterDiretorioAtual());
+		
+		System.out.println("raiz da est: "+est.obterRaiz().obterDiretorioAtual());
+		
+		File file = new File(System.getProperty("user.dir"));
+
 		/*try {
 			bancoTeste.adicionar(bancoTeste.obterBancoDeDados(), estr, estr);
 		} catch (JaExisteArquivoOuDiretorioException e) {

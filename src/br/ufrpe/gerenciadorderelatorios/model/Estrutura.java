@@ -11,28 +11,69 @@ public class Estrutura extends Gravavel {
 	 * 
 	 */
 	private static final long serialVersionUID = 10992113208536148L;
-	private String raiz;
+	private Estrutura pai;
+	private String diretorioAtual;
 	private String nomeArquivo;
 	private ArrayList <Estrutura> subDiretorios;
 	
-	public Estrutura(String raiz, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
-		this.definirRaiz(raiz);
+	public Estrutura(Estrutura pai, String diretorioAtual, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
+		this.definirPai(pai);
+		this.definirDiretorioAtual(diretorioAtual);
 		this.definirNomeArquivo(nomeArquivo);
 		this.definirSubDiretorios(subDiretorios);
+	}
+
+	public Estrutura obterRaiz() {
+		Estrutura raiz = null;
+		
+		if(this.obterPai() == null) {
+			raiz = this;
+		} else {
+			raiz = this.obterPai().obterRaiz();
+		}
+		
+		return raiz;
 	}
 	
 	public static Estrutura montarEstrutura(ArrayList <String> lista, String nomeArquivo) {
 		Estrutura resultado = null;
 		if(lista.size() == 1) {
-			resultado = new Estrutura(lista.get(0), nomeArquivo, null);
+			resultado = new Estrutura(null, lista.get(0), nomeArquivo, null);
 		} else {
-			ArrayList <Estrutura> temp = new ArrayList <Estrutura> ();
-			temp.add(montarEstrutura(new ArrayList <String> (lista.subList(1, lista.size())), nomeArquivo));
-			resultado = new Estrutura(lista.get(0), nomeArquivo, temp);
+			//ArrayList <Estrutura> temp = new ArrayList <Estrutura> ();
+			//temp.add(montarEstrutura(new ArrayList <String> (lista.subList(1, lista.size())), nomeArquivo));
+			//resultado = new Estrutura(lista.get(0), nomeArquivo, temp);
+			resultado = new Estrutura(null, lista.get(0), nomeArquivo, null);
+			resultado.adicionar(montarEstrutura(new ArrayList <String> (lista.subList(1, lista.size())), nomeArquivo));
+			resultado.obterListaSubDiretorios()[0].definirPai(resultado);
 		}
 		return resultado;
 	}
 	
+	public String obterCaminhoAncestrais() {
+		String resultado = null;
+		if(this.pai == null) {
+			resultado = this.diretorioAtual;
+			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
+		} else {
+			resultado = this.pai.obterCaminhoAncestrais()+File.separator+this.obterDiretorioAtual();
+			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
+		}
+		return resultado;
+	}
+	
+	public String obterCaminhoDescendentes() {
+		String resultado = null;
+		if(this.subDiretorios == null) {
+			resultado = this.diretorioAtual;
+			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
+		} else {
+			resultado = this.diretorioAtual+File.separator+this.subDiretorios.get(0).obterCaminhoDescendentes();
+			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
+		}
+		return resultado;
+	}
+
 	public void adicionar(Estrutura e) {
 		if(this.subDiretorios == null) {
 			this.definirSubDiretorios(new ArrayList <Estrutura> ());
@@ -54,10 +95,10 @@ public class Estrutura extends Gravavel {
 	}
 	
 	public void adicionarNaPonta(Estrutura e) {
-		if(this.subDiretorios  == null) {
+		if(this.subDiretorios == null) {
 			this.adicionar(e);
 		} else {
-			this.obterSubDiretorios()[0].adicionarNaPonta(e);
+			this.obterListaSubDiretorios()[0].adicionarNaPonta(e);
 		}
 	}
 	
@@ -74,15 +115,39 @@ public class Estrutura extends Gravavel {
 		}
 	}
 	
-	public String obterRaiz() {
-		return this.raiz;
+	public void remover(int indice) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+		if(this.subDiretorios != null) {
+			if(indice >= 0 && indice < this.subDiretorios.size()) {
+				this.subDiretorios.remove(indice);
+			} else {
+				throw new ArquivoOuDiretorioNaoExisteException("O elemento não esta presente na lista.");
+			}
+		} else {
+			throw new ExclusaoDeArquivoOuDiretorioNegadaException("Lista de elementos vazia.");
+		}
 	}
 	
-	public void definirRaiz(String raiz) {
-		this.raiz = raiz;
+	public Estrutura obterPai() {
+		return pai;
+	}
+
+	public void definirPai(Estrutura pai) {
+		this.pai = pai;
+	}
+
+	public String obterDiretorioAtual() {
+		return this.diretorioAtual;
 	}
 	
-	public Estrutura[] obterSubDiretorios() {
+	public void definirDiretorioAtual(String diretorioAtual) {
+		this.diretorioAtual = diretorioAtual;
+	}
+	
+	public ArrayList<Estrutura> obterSubDiretorios() {
+		return subDiretorios;
+	}
+
+	public Estrutura[] obterListaSubDiretorios() {
 		Estrutura[] sub = null;
 		if(this.subDiretorios != null) {
 			sub = subDiretorios.toArray(new Estrutura[subDiretorios.size()]);
@@ -96,7 +161,7 @@ public class Estrutura extends Gravavel {
 
 	@Override
 	public String obterId() {
-		return this.obterRaiz();
+		return this.obterDiretorioAtual();
 	}
 
 	public String obterNomeArquivo() {
@@ -107,13 +172,4 @@ public class Estrutura extends Gravavel {
 		this.nomeArquivo = arquivo;
 	}
 	
-	public String obterCaminho() {
-		String resultado = null;
-		if(this.subDiretorios == null) {
-			resultado = this.raiz;
-		} else {
-			resultado = this.raiz+File.separatorChar+this.subDiretorios.get(0).obterCaminho();
-		}
-		return resultado;
-	}
 }

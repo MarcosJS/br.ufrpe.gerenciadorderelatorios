@@ -21,7 +21,7 @@ public class TelaPrincipal extends JFrame {
 		NucleoGeRel controle = new NucleoGeRel();
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	this.setSize(1280, 768);
+    	this.setSize(1280, 744);
     	this.setTitle("Ge Relatorio");
     	this.getContentPane().setLayout(new CardLayout(0, 0));
     	
@@ -33,7 +33,7 @@ public class TelaPrincipal extends JFrame {
     	
     	SaidaSistema aba = new SaidaSistema(controle, new Color(230, 230, 255), new Color(150,255, 150));
     	
-    	MenuSistema menu = new MenuSistema(new Color(100, 149, 237), SystemColor.WHITE, PainelArq, aba);
+    	MenuSistema menu = new MenuSistema(controle, new Color(100, 149, 237), SystemColor.WHITE, PainelArq, aba);
     	
     	aba.add(menu);
     	

@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 import br.ufrpe.gerenciadorderelatorios.model.*;
 
@@ -18,8 +19,8 @@ public class NucleoGeRel {
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
 	private BancoDeDadosGeRel bancoTeste;
-	private Estrutura bdHistoricos = new Estrutura(BancoDeDadosGeRel.BD_HISTORICOS, null, null);
-	private Estrutura bdaceso = new Estrutura(BancoDeDadosGeRel.BD_ACESSO, null, null);
+	private Estrutura bdHistoricos = new Estrutura(null, BancoDeDadosGeRel.BD_HISTORICOS, null, null);
+	private Estrutura bdAceso = new Estrutura(null, BancoDeDadosGeRel.BD_ACESSO, null, null);
 	
 	public NucleoGeRel() {
 		this.historico = new HistoricoGeRel();
@@ -29,22 +30,28 @@ public class NucleoGeRel {
 		
 	}
 	
-	public void armazenarHistorico() {
+	public void armazenarHistorico() throws DiretorioNaoPodeSerCriadoException, JaExisteArquivoOuDiretorioException {
+		/*Salvando os historicos.*/
+		String[] camHistorico = {this.bdHistoricos.obterDiretorioAtual(), this.historico.obterId()};
+		Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historico.obterId()+".ser");
+
 		try {
-			/*Salvando os historicos.*/
-			String[] camHistorico = {this.historico.obterId()};
-			Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historico.obterId()+".ser");
-			this.bancoTeste.adicionar(this.bdHistoricos, estHistorico, this.historico);
+			this.bancoTeste.adicionar(estHistorico, this.historico);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		for(Relatorio r: this.historico.obterListaRelatorios()) {
+			/*Salvando os relatorios.*/
+			String[] camRelatorio = {this.bdHistoricos.obterDiretorioAtual(), this.historico.obterId(), "rel"};
+			Estrutura estRelatorio = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camRelatorio)), r.obterId()+".ser");
 			
-			for(Relatorio r: this.historico.obterListaRelatorios()) {
-				/*Salvando os relatorios.*/
-				String[] camRelatorio = {this.historico.obterId(), "rel"};
-				Estrutura estRelatorio = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camRelatorio)), r.obterId()+".ser");
-				this.bancoTeste.adicionar(this.bdHistoricos, estRelatorio, r);
+			try {
+				System.out.println("\tentrando relatorio...");
+				this.bancoTeste.adicionar(estRelatorio, r);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (JaExisteArquivoOuDiretorioException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	

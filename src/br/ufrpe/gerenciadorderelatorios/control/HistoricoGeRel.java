@@ -29,7 +29,7 @@ public class HistoricoGeRel extends Gravavel{
 			}
 			
 			/*Acrescentando id do histórico ao relatório.*/
-			String newId = "h"+String.format("%04d", this.obterQuantidadeRelatorios());
+			String newId = "r"+String.format("%04d", this.obterQuantidadeRelatorios() + 1);
 			rel.definirId(newId);
 			this.relatorios.add(rel);
 		}

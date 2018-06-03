@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
+import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
+import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -19,12 +21,15 @@ public class MenuSistema extends JPanel {
 	private static final long serialVersionUID = 1L;
 	//private SelArqPanel selArq;
 	private boolean estaCarregado = false;
+	private NucleoGeRel controle;
 	
-	public MenuSistema(/*NucleoGeRel controle, */Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, SaidaSistema saida) {
+	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, SaidaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
+		this.controle = controle;
+		
 		this.setForeground(corFonteBotoes);
-    	this.setBounds(0, 0, 319, 703);
+    	this.setBounds(0, 0, 319, 677);
     	this.setBackground(new Color(255, 255, 102));
     	this.setLayout(null);
     	
@@ -71,7 +76,15 @@ public class MenuSistema extends JPanel {
     	btnSalvarRelatorios.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					//saida.renderizar(SaidaSistema.Relatorio.ANTERIORES);
+    				try {
+						controle.armazenarHistorico();
+					} catch (DiretorioNaoPodeSerCriadoException e1) {
+						e1.printStackTrace();
+					} catch (JaExisteArquivoOuDiretorioException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+    				JOptionPane.showMessageDialog(null, "Os arquivos foram armazenados!", "Atenção", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
