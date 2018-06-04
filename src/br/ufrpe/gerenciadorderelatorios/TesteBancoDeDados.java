@@ -1,12 +1,13 @@
 package br.ufrpe.gerenciadorderelatorios;
 
-import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.ExclusaoDeArquivoOuDiretorioNegadaException;
-import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.TipoDeArquivoDifereDoEsperadoException;
 import br.ufrpe.gerenciadorderelatorios.model.BancoDeDadosGeRel;
 import br.ufrpe.gerenciadorderelatorios.model.Estrutura;
@@ -40,7 +41,11 @@ public class TesteBancoDeDados {
 		
 		System.out.println("raiz da est: "+est.obterRaiz().obterDiretorioAtual());
 		
-		File file = new File(System.getProperty("user.dir"));
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		Date date = new Date();
+		System.out.println(dateFormat.format(date));
+		
+		//File file = new File(System.getProperty("user.dir"));
 
 		/*try {
 			bancoTeste.adicionar(bancoTeste.obterBancoDeDados(), estr, estr);

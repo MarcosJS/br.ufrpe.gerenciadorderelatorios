@@ -26,7 +26,7 @@ public class MenuSistema extends JPanel {
 	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, SaidaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
-		this.controle = controle;
+		this.definirControle(controle);
 		
 		this.setForeground(corFonteBotoes);
     	this.setBounds(0, 0, 319, 677);
@@ -159,6 +159,14 @@ public class MenuSistema extends JPanel {
 	
 	public void setEstaCarregado(boolean estaCarregado) {
 		this.estaCarregado = estaCarregado;
+	}
+
+	public NucleoGeRel obterControle() {
+		return controle;
+	}
+
+	public void definirControle(NucleoGeRel controle) {
+		this.controle = controle;
 	}
 	
 	/*public void setSelArq(SelArqPanel selArq) {

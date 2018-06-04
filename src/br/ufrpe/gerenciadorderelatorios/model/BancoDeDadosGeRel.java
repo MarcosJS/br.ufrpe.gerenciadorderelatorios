@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import br.ufrpe.gerenciadorderelatorios.excecoes.*;
 
 public class BancoDeDadosGeRel {
+	private static final String NOME_ARQUIVO_BANCO = "indGeRel";
 	private static final String BANCO_DE_DADOS = "bd_gerel";
 	public static final String BD_HISTORICOS = "bd_historicos";
 	public static final String BD_ACESSO=  "bd_acesso";
@@ -20,21 +20,35 @@ public class BancoDeDadosGeRel {
 	
 	/**Inicializa o banco de dados.*/
 	public void iniciarBancoDeDados(String raizBanco) {
-		/*Criando a estrutura de diretórios para o banco de dados.*/
-		this.definirEstruturaBanco(new Estrutura(null, BANCO_DE_DADOS, null, null));
-
-		Estrutura banco = new Estrutura(this.estruturaIndiceBanco, BD_HISTORICOS, null, null);
-		this.obterEstruturaBanco().adicionar(banco);
-		banco = new Estrutura(this.estruturaIndiceBanco, BD_ACESSO, null, null);
-		this.obterEstruturaBanco().adicionar(banco);
-				
+		/*Recuperando o indice do banco de dados.*/
 		this.bancoDeDados = new File(this.construirCaminho(new String[] {raizBanco, BANCO_DE_DADOS}));
+		Estrutura estIndice = new Estrutura(null, "indice", BancoDeDadosGeRel.NOME_ARQUIVO_BANCO+".ser", null);
 		try {
-			this.criarEstrutura(new File(raizBanco), this.estruturaIndiceBanco);
-			System.out.println("\t- banco de dados iniciado;");
-		} catch (DiretorioNaoPodeSerCriadoException e) {
+			this.estruturaIndiceBanco = (Estrutura) this.consultar(estIndice);
+		} catch (ArquivoOuDiretorioNaoExisteException e) {
 			e.printStackTrace();
+			System.out.println("\t- não existe arquivo de indice.");
 		}
+		
+		if(this.estruturaIndiceBanco != null) {
+			System.out.println("\t- indice carregado.");
+		} else {
+			/*Criando a estrutura de diretórios para o banco de dados.*/
+			this.definirEstruturaBanco(new Estrutura(null, BANCO_DE_DADOS, NOME_ARQUIVO_BANCO, null));
+
+			Estrutura banco = new Estrutura(this.estruturaIndiceBanco, BD_HISTORICOS, null, null);
+			this.estruturaIndiceBanco.adicionar(banco);
+			banco = new Estrutura(this.estruturaIndiceBanco, BD_ACESSO, null, null);
+			this.estruturaIndiceBanco.adicionar(banco);
+					
+			try {
+				this.criarEstrutura(new File(raizBanco), this.estruturaIndiceBanco);
+				
+			} catch (DiretorioNaoPodeSerCriadoException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("\t- banco inicializado.");
 	}
 	
 	/**Criar uma estrutura de pastas de acordo com o paramentro 'estrutura'.
@@ -66,7 +80,7 @@ public class BancoDeDadosGeRel {
 		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
 		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
 		File diretorio = new File(caminhoDiretorio);
-		System.out.println("\t[BancoDeDadosGeRel.adicionar] caminho do diretorio de consulta: "+diretorio.getAbsolutePath());
+		//System.out.println("\t[BancoDeDadosGeRel.adicionar] caminho do diretorio de consulta: "+diretorio.getAbsolutePath());
 		
 		/*Verificando se o hisórico já existe.*/
 		if (diretorio.exists() && diretorio.isDirectory()) {
@@ -89,7 +103,9 @@ public class BancoDeDadosGeRel {
 						System.out.println("\t[BancoDeDados.adicionar] arquivo salvo;");
 						
 						/*Indexando o arquivo.*/
-						this.adicionarAoIndice(estrutura.obterRaiz());
+						if(estrutura.eIndexavel()) {
+							this.adicionarAoIndice(estrutura.obterRaiz());
+						}
 						
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -117,7 +133,7 @@ public class BancoDeDadosGeRel {
 			} else {
 				/*Descendo para o nivel abaixo.*/
 				for(Estrutura e: estrutura.obterListaSubDiretorios()) {
-					System.out.println("\t[BancoDeDadosGeRel.adicionar] subdiretorio entrando na funcao adicionar: "+e.obterDiretorioAtual());
+					//System.out.println("\t[BancoDeDadosGeRel.adicionar] subdiretorio entrando na funcao adicionar: "+e.obterDiretorioAtual());
 					this.adicionar(e, gravavel);
 				}
 			}
@@ -134,9 +150,9 @@ public class BancoDeDadosGeRel {
 	/**Remove o arquivo ou diretório especificado se houver.
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException*/
-	public void remover(Estrutura base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
-		base.adicionarNaPonta(new Estrutura(null, estrutura.obterDiretorioAtual(), estrutura.obterNomeArquivo(), null));
-		String caminhoDiretorio =  this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), base.obterCaminhoDescendentes()});
+	public void remover(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
+		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
 		File diretorio = new File(caminhoDiretorio);
 		
 		/*Verificando se o diretório existe*/
@@ -156,7 +172,9 @@ public class BancoDeDadosGeRel {
 						throw new ExclusaoDeArquivoOuDiretorioNegadaException("Permissao para excluir o arquivo ou diretório negada: "+alvo.getName());
 					} else {
 						System.out.println("\t- arquivo removido;");
-						this.removerDoIndice(base);
+						if(estrutura.eIndexavel()) {
+							this.removerDoIndice(estrutura.obterRaiz());
+						}
 					}
 					
 				} else {
@@ -164,7 +182,7 @@ public class BancoDeDadosGeRel {
 				}
 			} else {
 				for(Estrutura e: estrutura.obterSubDiretorios()) {
-					this.remover(base, e);
+					this.remover(e);
 				}
 			}
 		} else {
@@ -173,12 +191,12 @@ public class BancoDeDadosGeRel {
 	}
 	
 	/**Retorna o arquivo especificado se houver.
-	 * @throws ArquivoOuDiretorioNaoExisteException 
-	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException */
-	public Serializable consultar(File base, Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+	 * @throws ArquivoOuDiretorioNaoExisteException */
+	public Serializable consultar(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
 		Serializable arquivo = null;
-		File alvo = null;
-		String caminhoDiretorio =  this.construirCaminho(new String[] {base.getAbsolutePath(), estrutura.obterDiretorioAtual()});
+		
+		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
+		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
 		File diretorio = new File(caminhoDiretorio);
 		
 		/*Verificando se o diretório existe*/
@@ -187,19 +205,19 @@ public class BancoDeDadosGeRel {
 			/*Verificando se já é esta o diretório correto para pesquisar o arquivo.*/
 			if(estrutura.obterSubDiretorios() == null) {
 				String caminhoArquivo = this.construirCaminho(new String[] {diretorio.getAbsolutePath(), estrutura.obterNomeArquivo()});
-				alvo = new File(caminhoArquivo);
+				File alvo = new File(caminhoArquivo);
 				
 				/*Verificando se o arquivo existe.*/
 				if(alvo.exists()) {
 					
 					/*Recuperando o arquivo.*/
 					FileInputStream arquivoDeEntrada = null;
-					ObjectInputStream ObjetoDeEntrada = null;
+					ObjectInputStream objetoDeEntrada = null;
 
 					try {
 						arquivoDeEntrada = new FileInputStream(alvo.getAbsolutePath());
-						ObjetoDeEntrada = new ObjectInputStream(arquivoDeEntrada);
-						arquivo = (Serializable) ObjetoDeEntrada.readObject();
+						objetoDeEntrada = new ObjectInputStream(arquivoDeEntrada);
+						arquivo = (Serializable) objetoDeEntrada.readObject();
 						
 					} catch (Exception ex) {
 						ex.printStackTrace();
@@ -213,9 +231,9 @@ public class BancoDeDadosGeRel {
 							}
 						}
 
-						if (ObjetoDeEntrada != null) {
+						if (objetoDeEntrada != null) {
 							try {
-								ObjetoDeEntrada.close();
+								objetoDeEntrada.close();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -227,7 +245,7 @@ public class BancoDeDadosGeRel {
 				}
 			} else {
 				for(Estrutura e: estrutura.obterSubDiretorios()) {
-					arquivo = this.consultar(diretorio, e);
+					arquivo = this.consultar(e);
 				}
 			}
 		} else {
@@ -255,7 +273,7 @@ public class BancoDeDadosGeRel {
 		case "bd_historicos":
 			String estruturaAlvo = "est"+estrutura.obterListaSubDiretorios()[0].obterDiretorioAtual().substring(1, 5);
 			Estrutura banco = this.estruturaIndiceBanco.obterListaSubDiretorios()[0];
-			System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] Estrutura  de banco: "+banco.obterDiretorioAtual());
+			//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] Estrutura  de banco: "+banco.obterDiretorioAtual());
 			boolean adicionado = false;
 			
 			/*Verificando se existe alguma indexação.*/
@@ -263,14 +281,14 @@ public class BancoDeDadosGeRel {
 				
 				/*Obtendo estruturas 'indices' referentes a cada histórico.*/
 				for(Estrutura e: banco.obterListaSubDiretorios()) {
-					System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura disponivel no banco: "+e.obterDiretorioAtual());
-					System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura procurada: "+estruturaAlvo);
+					//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura disponivel no banco: "+e.obterDiretorioAtual());
+					//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura procurada: "+estruturaAlvo);
 					
 					/*Verificando se a estrutura já esta indexada.*/
-					if(e.obterDiretorioAtual().equals(estruturaAlvo)) {
+					if(e.obterNomeArquivo().substring(0, 7).equals(estruturaAlvo)) {
 						
 						/*Escolhendo a posição no indice através da primeira letra do nome do arquivo.*/
-						System.out.println("\t"+estrutura.obterNomeArquivo().substring(0, 1));
+						//System.out.println("\t"+estrutura.obterNomeArquivo().substring(0, 1));
 						switch(estrutura.obterNomeArquivo().substring(0, 1)) {
 						
 						case "h":
@@ -294,27 +312,54 @@ public class BancoDeDadosGeRel {
 							e.adicionar(estrutura, 1);
 							break;
 						default:
+							try {
+								e.remover(estrutura);
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
 							e.adicionar(estrutura);
 							break;
+						}
+						
+						/*Salvando o arquivo de indice.*/
+						Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
+						estIndice.definirIndexavel(false);
+						try {
+							this.remover(estIndice);
+							this.adicionar(estIndice, this.estruturaIndiceBanco);
+						} catch (JaExisteArquivoOuDiretorioException e1) {
+							e1.printStackTrace();
+						} catch (DiretorioNaoPodeSerCriadoException e1) {
+							e1.printStackTrace();
+						} catch (ArquivoOuDiretorioNaoExisteException e1) {
+							e1.printStackTrace();
+						} catch (ExclusaoDeArquivoOuDiretorioNegadaException e1) {
+							e1.printStackTrace();
 						}
 						adicionado = true;
 						System.out.println("\t- arquivo indexado;");
 						break;
 					} 
 				}
+			}
 				
-				/*Verificando se o arquivo foi indexado.*/
-				if(!adicionado) {
-					Estrutura itemBanco = new Estrutura(null, estruturaAlvo, estruturaAlvo+".ser", null);
-					itemBanco.adicionar(estrutura);
-					banco.adicionar(itemBanco);
-				}
-				
-			} else {
-				System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] Subdiretorios do banco nulo: "+banco.obterSubDiretorios());
-				Estrutura itemBanco = new Estrutura(null, estruturaAlvo, estruturaAlvo+".ser", null);
+			/*Verificando se o arquivo foi indexado.*/
+			if(!adicionado) {
+				Estrutura itemBanco = new Estrutura(null, "indice", estruturaAlvo+".ser", null);
 				itemBanco.adicionar(estrutura);
 				banco.adicionar(itemBanco);
+				
+				/*Salvando indice.*/
+				Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
+				estIndice.definirIndexavel(false);
+				try {
+					this.adicionar(estIndice, this.estruturaIndiceBanco);
+				} catch (JaExisteArquivoOuDiretorioException e1) {
+					e1.printStackTrace();
+				} catch (DiretorioNaoPodeSerCriadoException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("\t- arquivo indexado;");
 			}
 			
 			break;
@@ -328,7 +373,7 @@ public class BancoDeDadosGeRel {
 	 * @author Marcos Jose
 	 * @throws ArquivoOuDiretorioNaoExisteException 
 	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException */
-	private void removerDoIndice(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
+	private void removerDoIndice(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
 		
 		/*Descobrindo o banco de dados.*/
 		switch (estrutura.obterDiretorioAtual()) {
@@ -344,12 +389,25 @@ public class BancoDeDadosGeRel {
 				for(Estrutura e: banco.obterSubDiretorios()) {
 					
 					/*Verificando se a estrutura já esta indexada.*/
-					if(e.obterDiretorioAtual().equals(estruturaAlvo)) {
+					if(e.obterNomeArquivo().substring(0, 7).equals(estruturaAlvo)) {
 						
 						/*Removendo o arquivo.*/
-						e.remover(estrutura);
-						removido = true;
-						System.out.println("\t- arquivo removido do indice;");
+						try {
+							e.remover(estrutura);
+							removido = true;
+							
+							/*Removendo o indice.*/
+							Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
+							estIndice.definirIndexavel(false);
+							this.remover(estIndice);
+							System.out.println("\t- arquivo removido do indice;");
+							
+						} catch (ExclusaoDeArquivoOuDiretorioNegadaException e1) {
+							e1.printStackTrace();
+						} catch (ArquivoOuDiretorioNaoExisteException e1) {
+							e1.printStackTrace();
+						}
+						
 						break;
 					} 
 				}
@@ -378,7 +436,7 @@ public class BancoDeDadosGeRel {
 		return bancoDeDados;
 	}
 
-	public Estrutura obterEstruturaBanco() {
+	public Estrutura obterEstruturaIndiceBanco() {
 		return this.estruturaIndiceBanco;
 	}
 

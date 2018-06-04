@@ -11,16 +11,19 @@ public class Estrutura extends Gravavel {
 	 * 
 	 */
 	private static final long serialVersionUID = 10992113208536148L;
+	
 	private Estrutura pai;
 	private String diretorioAtual;
 	private String nomeArquivo;
 	private ArrayList <Estrutura> subDiretorios;
+	private boolean indexavel;
 	
 	public Estrutura(Estrutura pai, String diretorioAtual, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
 		this.definirPai(pai);
 		this.definirDiretorioAtual(diretorioAtual);
 		this.definirNomeArquivo(nomeArquivo);
 		this.definirSubDiretorios(subDiretorios);
+		this.definirIndexavel(true);
 	}
 
 	public Estrutura obterRaiz() {
@@ -104,12 +107,10 @@ public class Estrutura extends Gravavel {
 	
 	public void remover(Estrutura e) throws ExclusaoDeArquivoOuDiretorioNegadaException, ArquivoOuDiretorioNaoExisteException {
 		if(this.subDiretorios != null) {
-			int indice = this.subDiretorios.indexOf(e);
-			if(indice >= 0) {
-				this.subDiretorios.remove(e);
-			} else {
+			if(!this.subDiretorios.remove(e)) {
 				throw new ArquivoOuDiretorioNaoExisteException("O elemento não esta presente na lista.");
 			}
+			
 		} else {
 			throw new ExclusaoDeArquivoOuDiretorioNegadaException("Lista de elementos vazia.");
 		}
@@ -172,4 +173,28 @@ public class Estrutura extends Gravavel {
 		this.nomeArquivo = arquivo;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Estrutura other = (Estrutura) obj;
+		if (nomeArquivo == null) {
+			if (other.nomeArquivo != null)
+				return false;
+		} else if (!nomeArquivo.equals(other.nomeArquivo))
+			return false;
+		return true;
+	}
+
+	public boolean eIndexavel() {
+		return indexavel;
+	}
+
+	public void definirIndexavel(boolean indexavel) {
+		this.indexavel = indexavel;
+	}
 }

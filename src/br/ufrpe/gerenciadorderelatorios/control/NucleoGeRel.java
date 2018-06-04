@@ -19,20 +19,17 @@ public class NucleoGeRel {
 	private Relatorio relatorio;
 	private HistoricoGeRel historico;
 	private BancoDeDadosGeRel bancoTeste;
-	private Estrutura bdHistoricos = new Estrutura(null, BancoDeDadosGeRel.BD_HISTORICOS, null, null);
-	private Estrutura bdAceso = new Estrutura(null, BancoDeDadosGeRel.BD_ACESSO, null, null);
 	
 	public NucleoGeRel() {
-		this.historico = new HistoricoGeRel();
-		this.historico.definirId("h0001");
 		this.bancoTeste = new BancoDeDadosGeRel();
 		bancoTeste.iniciarBancoDeDados(System.getProperty("user.dir"));
-		
+		this.historico = new HistoricoGeRel();
+		this.historico.definirId("h0001");
 	}
 	
 	public void armazenarHistorico() throws DiretorioNaoPodeSerCriadoException, JaExisteArquivoOuDiretorioException {
 		/*Salvando os historicos.*/
-		String[] camHistorico = {this.bdHistoricos.obterDiretorioAtual(), this.historico.obterId()};
+		String[] camHistorico = {BancoDeDadosGeRel.BD_HISTORICOS, this.historico.obterId()};
 		Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historico.obterId()+".ser");
 
 		try {
@@ -40,18 +37,19 @@ public class NucleoGeRel {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+		int i = 1;
 		for(Relatorio r: this.historico.obterListaRelatorios()) {
 			/*Salvando os relatorios.*/
-			String[] camRelatorio = {this.bdHistoricos.obterDiretorioAtual(), this.historico.obterId(), "rel"};
+			String[] camRelatorio = {BancoDeDadosGeRel.BD_HISTORICOS, this.historico.obterId(), "rel"};
 			Estrutura estRelatorio = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camRelatorio)), r.obterId()+".ser");
 			
 			try {
-				System.out.println("\tentrando relatorio...");
+				System.out.println("\tentrando relatorio "+i+"...");
 				this.bancoTeste.adicionar(estRelatorio, r);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			i++;
 		}
 	}
 	
