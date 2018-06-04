@@ -16,30 +16,41 @@ import br.ufrpe.gerenciadorderelatorios.model.*;
 
 public class NucleoGeRel {
 	
-	private HistoricoGeRel historico;
+	private HistoricoGeRel historicoSelecionado;
+	private HistoricoGeRel[] historicosVetor;
 	private BancoDeDadosGeRel bancoDeDados;
 	
 	public NucleoGeRel() {
+		historicosVetor = new HistoricoGeRel[2];
 		this.bancoDeDados = new BancoDeDadosGeRel();
 		bancoDeDados.iniciarBancoDeDados(System.getProperty("user.dir"));
-		this.historico = new HistoricoGeRel();
-		this.historico.definirId("h0001");
+		this.historicosVetor[0] = new HistoricoGeRel();
+		this.historicosVetor[0].definirId("h0001");
+		this.historicosVetor[1] = new HistoricoGeRel();
+		this.historicosVetor[1].definirId("h0002");
+		this.historicoSelecionado = this.historicosVetor[0];
+	}
+	
+	public void selecionarHistorico(int indice) {
+		if(indice >= 0 && indice < this.historicosVetor.length) {
+			this.historicoSelecionado = this.historicosVetor[indice];
+		}	
 	}
 	
 	public void armazenarHistorico() throws DiretorioNaoPodeSerCriadoException, JaExisteArquivoOuDiretorioException {
 		/*Salvando os historicos.*/
-		String[] camHistorico = {BancoDeDadosGeRel.BD_HISTORICOS, this.historico.obterId()};
-		Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historico.obterId()+".ser");
+		String[] camHistorico = {BancoDeDadosGeRel.BD_HISTORICOS, this.historicoSelecionado.obterId()};
+		Estrutura estHistorico = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camHistorico)), this.historicoSelecionado.obterId()+".ser");
 
 		try {
-			this.bancoDeDados.adicionar(estHistorico, this.historico);
+			this.bancoDeDados.adicionar(estHistorico, this.historicoSelecionado);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		int i = 1;
-		for(Relatorio r: this.historico.obterListaRelatorios()) {
+		for(Relatorio r: this.historicoSelecionado.obterListaRelatorios()) {
 			/*Salvando os relatorios.*/
-			String[] camRelatorio = {BancoDeDadosGeRel.BD_HISTORICOS, this.historico.obterId(), "rel"};
+			String[] camRelatorio = {BancoDeDadosGeRel.BD_HISTORICOS, this.historicoSelecionado.obterId(), "rel"};
 			Estrutura estRelatorio = Estrutura.montarEstrutura(new ArrayList <String> (Arrays.asList(camRelatorio)), r.obterId()+".ser");
 			
 			try {
@@ -65,7 +76,6 @@ public class NucleoGeRel {
 	    	linhasRel[i] = new Linha(pdfLinhas[i], i, i);
 	    }
 	    
-	    //this.relatorio = new Relatorio(linhasRel);
 	    Relatorio relatorio = new Relatorio(linhasRel);
 	    this.adicionarRelatorio(relatorio);
 	    
@@ -73,28 +83,12 @@ public class NucleoGeRel {
 	    
 	}
 	
-	public void adicionarRelatorio(Relatorio rel) {
-		this.historico.adicionarRelatorio(rel);
-	}
-
-	public String[] obterIncluidos(int indice) {
-		return null;
-	}
-
-	public String[] obterExcluidos(int indice) {
-		return null;
-	}
-
-	public String[] obterInalterados(int indice) {
-		return null;
-	}
-
-	public String[] obterLista(int indice) {
-		return null;
+	private void adicionarRelatorio(Relatorio rel) {
+		this.historicoSelecionado.adicionarRelatorio(rel);
 	}
 
 	public String[] obterRelatorio(int indice) {
-		Relatorio relatorio = this.historico.obterRelatorio(indice);
+		Relatorio relatorio = this.historicoSelecionado.obterRelatorio(indice);
 		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
 		Linha[] linhas = relatorio.obterLinhas();
 		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
@@ -103,7 +97,15 @@ public class NucleoGeRel {
 		return linhasTexto;
 	}
 	
+	public int obterQuantidadeHistoricos() {
+		return this.historicosVetor.length;
+	}
+	
 	public int obterQuantidadeRelatorios() {
-		return this.historico.obterQuantidadeRelatorios();
+		return this.historicoSelecionado.obterQuantidadeRelatorios();
+	}
+	
+	public String obterId() {
+		return this.historicoSelecionado.obterId();
 	}
 }
