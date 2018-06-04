@@ -7,13 +7,33 @@ public class Linha implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 4929477468964210438L;
+	private int posicaoOriginal;
+	private int posicaoPosAnalise;
 	private String Relatorio;
-	private boolean nova;
-	private boolean excluida;
+	private boolean modificada;
 	private String linha;
+	private String modificacaoLinha;
 	
 	public Linha(String linha, int posicaOriginal, int posicaoPosAnalise) {
 		this.definirLinha(linha);
+		this.definirPosicaoOriginal(posicaOriginal);
+		this.definirPosicaoPosAnalise(posicaoPosAnalise);
+	}
+	
+	public int obterPosicaoOriginal() {
+		return posicaoOriginal;
+	}
+	
+	private void definirPosicaoOriginal(int posicao) {
+		this.posicaoOriginal = posicao;
+	}
+	
+	public int obterPosicaoPosAnalise() {
+		return posicaoPosAnalise;
+	}
+	
+	public void definirPosicaoPosAnalise(int posicao) {
+		this.posicaoPosAnalise = posicao;
 	}
 	
 	public String obterRelatorio() {
@@ -24,27 +44,27 @@ public class Linha implements Serializable{
 		this.Relatorio = idRelatorio;
 	}
 	
-	public boolean eNova() {
-		return nova;
-	}
-
-	public void definirNova(boolean nova) {
-		this.nova = nova;
+	public boolean isModificada() {
+		return modificada;
 	}
 	
-	public boolean eExcluida() {
-		return excluida;
+	public void definirModificada(boolean modificada) {
+		this.modificada = modificada;
 	}
-
-	public void definirExcluida(boolean excluida) {
-		this.excluida = excluida;
-	}
-
+	
 	public String obterLinha() {
 		return linha;
 	}
 	
 	public void definirLinha(String linha) {
 		this.linha = linha;
+	}
+	
+	public String obterModificacaoLinha() {
+		return modificacaoLinha;
+	}
+	
+	public void definirModificacaoLinha(String modificacaoLinha) {
+		this.modificacaoLinha = modificacaoLinha;
 	}
 }

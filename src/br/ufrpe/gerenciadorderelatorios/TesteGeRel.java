@@ -1,5 +1,4 @@
-/***/
-package br.ufrpe.gerenciadorderelatorios.control;
+package br.ufrpe.gerenciadorderelatorios;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +11,18 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
-import br.ufrpe.gerenciadorderelatorios.model.*;
+import br.ufrpe.gerenciadorderelatorios.model.BancoDeDadosGeRel;
+import br.ufrpe.gerenciadorderelatorios.model.Estrutura;
+import br.ufrpe.gerenciadorderelatorios.model.HistoricoGeRel;
+import br.ufrpe.gerenciadorderelatorios.model.Linha;
+import br.ufrpe.gerenciadorderelatorios.model.Relatorio;
 
-public class NucleoGeRel {
+public class TesteGeRel {
 	
 	private HistoricoGeRel historico;
 	private BancoDeDadosGeRel bancoDeDados;
 	
-	public NucleoGeRel() {
+	public TesteGeRel() {
 		this.bancoDeDados = new BancoDeDadosGeRel();
 		bancoDeDados.iniciarBancoDeDados(System.getProperty("user.dir"));
 		this.historico = new HistoricoGeRel();
@@ -73,20 +76,8 @@ public class NucleoGeRel {
 	    
 	}
 	
-	public void adicionarRelatorio(Relatorio rel) {
+	private void adicionarRelatorio(Relatorio rel) {
 		this.historico.adicionarRelatorio(rel);
-	}
-
-	public String[] obterIncluidos(int indice) {
-		return null;
-	}
-
-	public String[] obterExcluidos(int indice) {
-		return null;
-	}
-
-	public String[] obterInalterados(int indice) {
-		return null;
 	}
 
 	public String[] obterLista(int indice) {
@@ -106,4 +97,9 @@ public class NucleoGeRel {
 	public int obterQuantidadeRelatorios() {
 		return this.historico.obterQuantidadeRelatorios();
 	}
+
+	public static void main(String[] args) {
+		
+	}
+	
 }

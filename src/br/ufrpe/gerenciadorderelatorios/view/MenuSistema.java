@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
+import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
+import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -19,12 +21,15 @@ public class MenuSistema extends JPanel {
 	private static final long serialVersionUID = 1L;
 	//private SelArqPanel selArq;
 	private boolean estaCarregado = false;
+	private NucleoGeRel controle;
 	
-	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, AbaSistema saida) {
+	public MenuSistema(NucleoGeRel controle, Color corFundoBotoes, Color corFonteBotoes, SelArqPanel selArq, SaidaSistema saida) {
 		super();
 		//this.setSelArq(selArq);
+		this.definirControle(controle);
+		
 		this.setForeground(corFonteBotoes);
-    	this.setBounds(0, 0, 319, 398);
+    	this.setBounds(0, 0, 319, 677);
     	this.setBackground(new Color(255, 255, 102));
     	this.setLayout(null);
     	
@@ -49,45 +54,55 @@ public class MenuSistema extends JPanel {
     	btnNewButton.setBounds(10, 176, 91, 23);
     	this.add(btnNewButton);
     	
-    	JButton btnMostrarAtual = new JButton("M\u00CAS ATUAL");
-    	btnMostrarAtual.addActionListener(new ActionListener() {
+    	JButton btnRelatorioCompleto = new JButton("RELAT\u00D3RIO COMPLETO");
+    	btnRelatorioCompleto.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.RECENTE);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.COMPLETO);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
     		}
     	});
-    	btnMostrarAtual.setForeground(corFonteBotoes);
-    	btnMostrarAtual.setBackground(corFundoBotoes);
-    	btnMostrarAtual.setToolTipText("Clique para exibir consignados do m\u00EAs atual.");
-    	btnMostrarAtual.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	btnMostrarAtual.setBounds(66, 226, 182, 23);
-    	this.add(btnMostrarAtual);
+    	btnRelatorioCompleto.setForeground(corFonteBotoes);
+    	btnRelatorioCompleto.setBackground(corFundoBotoes);
+    	btnRelatorioCompleto.setToolTipText("Clique para exibir o relat\u00F3rio completo.");
+    	btnRelatorioCompleto.setFont(new Font("Tahoma", Font.BOLD, 10));
+    	btnRelatorioCompleto.setBounds(66, 226, 182, 23);
+    	this.add(btnRelatorioCompleto);
     	
-    	JButton btnMostrarMsAnterior = new JButton("M\u00CAS ANTERIOR");
-    	btnMostrarMsAnterior.addActionListener(new ActionListener() {
+    	JButton btnSalvarRelatorios = new JButton("SALVAR RELAT\u00D3RIOS");
+    	btnSalvarRelatorios.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.ANTERIORES);
+    				try {
+						controle.armazenarHistorico();
+					} catch (DiretorioNaoPodeSerCriadoException e1) {
+						e1.printStackTrace();
+					} catch (JaExisteArquivoOuDiretorioException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+    				JOptionPane.showMessageDialog(null, "Os arquivos foram armazenados!", "Atenção", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
     		}
     	});
-    	btnMostrarMsAnterior.setForeground(corFonteBotoes);
-    	btnMostrarMsAnterior.setBackground(corFundoBotoes);
-    	btnMostrarMsAnterior.setToolTipText("Clique para exibir consignados do m\u00EAs anterior.");
-    	btnMostrarMsAnterior.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	btnMostrarMsAnterior.setBounds(66, 260, 182, 23);
-    	this.add(btnMostrarMsAnterior);
+    	btnSalvarRelatorios.setForeground(corFonteBotoes);
+    	btnSalvarRelatorios.setBackground(corFundoBotoes);
+    	btnSalvarRelatorios.setToolTipText("Clique para salvar os relat\u00F3rios no banco de dados.");
+    	btnSalvarRelatorios.setFont(new Font("Tahoma", Font.BOLD, 10));
+    	btnSalvarRelatorios.setBounds(66, 260, 182, 23);
+    	this.add(btnSalvarRelatorios);
     	
     	JButton btnNovos = new JButton("NOVOS");
     	btnNovos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.NOVOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INCLUIDOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -104,7 +119,8 @@ public class MenuSistema extends JPanel {
     	btnExcludos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.EXCLUIDOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.EXCLUIDOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -121,7 +137,8 @@ public class MenuSistema extends JPanel {
     	btnInalterado.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-					saida.renderizar(AbaSistema.Relatorio.INALTERADOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INALTERADOS);
+					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
 				}
@@ -142,6 +159,14 @@ public class MenuSistema extends JPanel {
 	
 	public void setEstaCarregado(boolean estaCarregado) {
 		this.estaCarregado = estaCarregado;
+	}
+
+	public NucleoGeRel obterControle() {
+		return controle;
+	}
+
+	public void definirControle(NucleoGeRel controle) {
+		this.controle = controle;
 	}
 	
 	/*public void setSelArq(SelArqPanel selArq) {
