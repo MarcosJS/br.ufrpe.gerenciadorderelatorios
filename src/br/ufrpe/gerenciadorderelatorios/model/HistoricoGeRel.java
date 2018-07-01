@@ -66,6 +66,23 @@ public class HistoricoGeRel extends Gravavel{
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HistoricoGeRel other = (HistoricoGeRel) obj;
+		if (this.obterId() == null) {
+			if (other.obterId() != null)
+				return false;
+		} else if (!this.obterId().equals(other.obterId()))
+			return false;
+		return true;
+	}
+	
+	@Override
 	public String obterId() {
 		return super.obterId();
 	}

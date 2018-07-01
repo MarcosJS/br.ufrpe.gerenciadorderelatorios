@@ -2,7 +2,7 @@ package br.ufrpe.gerenciadorderelatorios.model;
 
 import java.io.Serializable;
 
-public abstract class Gravavel implements Serializable {
+public class Gravavel implements Serializable {
 	/**
 	 * 
 	 */

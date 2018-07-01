@@ -1,4 +1,4 @@
-package br.ufrpe.gerenciadorderelatorios.model;
+	package br.ufrpe.gerenciadorderelatorios.model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 import br.ufrpe.gerenciadorderelatorios.excecoes.*;
 
 public class BancoDeDadosGeRel {
-	private static final String NOME_ARQUIVO_BANCO = "indGeRel";
+	private static final String NOME_ARQUIVO_BANCO = "indiceGeRel";
 	private static final String BANCO_DE_DADOS = "bd_gerel";
 	public static final String BD_HISTORICOS = "bd_historicos";
 	public static final String BD_ACESSO=  "bd_acesso";
@@ -51,7 +51,7 @@ public class BancoDeDadosGeRel {
 		System.out.println("\t- banco inicializado.");
 	}
 	
-	/**Criar uma estrutura de pastas de acordo com o paramentro 'estrutura'.
+	/**Criar uma estrutura de pastas de acordo com o paramen	tro 'estrutura'.
 	 * @throws DiretorioNaoPodeSerCriadoException */
 	private void criarEstrutura(File base, Estrutura estrutura) throws DiretorioNaoPodeSerCriadoException {
 		/*Não é criado um subdiretório como mesmo nome do diretório base.*/

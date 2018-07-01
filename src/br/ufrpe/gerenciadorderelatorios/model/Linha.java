@@ -1,23 +1,17 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
-import java.io.Serializable;
-
-public class Linha implements Serializable{
+public class Linha extends Gravavel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4929477468964210438L;
 	private int posicaoOriginal;
-	private int posicaoPosAnalise;
 	private String Relatorio;
-	private boolean modificada;
-	private String linha;
-	private String modificacaoLinha;
+	private String texto;
 	
 	public Linha(String linha, int posicaOriginal, int posicaoPosAnalise) {
-		this.definirLinha(linha);
+		this.definirTexto(linha);
 		this.definirPosicaoOriginal(posicaOriginal);
-		this.definirPosicaoPosAnalise(posicaoPosAnalise);
 	}
 	
 	public int obterPosicaoOriginal() {
@@ -28,14 +22,6 @@ public class Linha implements Serializable{
 		this.posicaoOriginal = posicao;
 	}
 	
-	public int obterPosicaoPosAnalise() {
-		return posicaoPosAnalise;
-	}
-	
-	public void definirPosicaoPosAnalise(int posicao) {
-		this.posicaoPosAnalise = posicao;
-	}
-	
 	public String obterRelatorio() {
 		return Relatorio;
 	}
@@ -44,27 +30,12 @@ public class Linha implements Serializable{
 		this.Relatorio = idRelatorio;
 	}
 	
-	public boolean isModificada() {
-		return modificada;
+	public String obterTexto() {
+		return this.texto;
 	}
 	
-	public void definirModificada(boolean modificada) {
-		this.modificada = modificada;
+	public void definirTexto(String texto) {
+		this.texto = texto;
 	}
 	
-	public String obterLinha() {
-		return linha;
-	}
-	
-	public void definirLinha(String linha) {
-		this.linha = linha;
-	}
-	
-	public String obterModificacaoLinha() {
-		return modificacaoLinha;
-	}
-	
-	public void definirModificacaoLinha(String modificacaoLinha) {
-		this.modificacaoLinha = modificacaoLinha;
-	}
 }

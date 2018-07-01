@@ -97,11 +97,11 @@ public class Estrutura extends Gravavel {
 		}
 	}
 	
-	public void adicionarNaPonta(Estrutura e) {
+	public void adicionarNivel(Estrutura e) {
 		if(this.subDiretorios == null) {
 			this.adicionar(e);
 		} else {
-			this.obterListaSubDiretorios()[0].adicionarNaPonta(e);
+			this.obterListaSubDiretorios()[0].adicionarNivel(e);
 		}
 	}
 	

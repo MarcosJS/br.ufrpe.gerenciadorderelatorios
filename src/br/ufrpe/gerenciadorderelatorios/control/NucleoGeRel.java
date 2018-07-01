@@ -18,23 +18,38 @@ public class NucleoGeRel {
 	
 	private HistoricoGeRel historicoSelecionado;
 	private HistoricoGeRel[] historicosVetor;
+	private ArrayList<HistoricoGeRel> historicos;
 	private BancoDeDadosGeRel bancoDeDados;
 	
 	public NucleoGeRel() {
-		historicosVetor = new HistoricoGeRel[2];
+		this.historicos = new ArrayList<HistoricoGeRel>();
+		this.historicosVetor = new HistoricoGeRel[2];
 		this.bancoDeDados = new BancoDeDadosGeRel();
-		bancoDeDados.iniciarBancoDeDados(System.getProperty("user.dir"));
+		this.bancoDeDados.iniciarBancoDeDados(System.getProperty("user.dir"));
 		this.historicosVetor[0] = new HistoricoGeRel();
-		this.historicosVetor[0].definirId("h0001");
+		
+		/*Acrescentando id do histórico ao relatório.*/
+		String newId = "h"+String.format("%04d", this.obterQuantidadeHistoricos() + 1);
+		this.historicosVetor[0].definirId(newId);
+		
 		this.historicosVetor[1] = new HistoricoGeRel();
-		this.historicosVetor[1].definirId("h0002");
+		/*Acrescentando id do histórico ao relatório.*/
+		newId = "h"+String.format("%04d", this.obterQuantidadeHistoricos() + 1);
+		
+		this.historicosVetor[1].definirId(newId);
+		
+		this.historicos.add(this.historicosVetor[0]);
+		this.historicos.add(this.historicosVetor[1]);
 		this.historicoSelecionado = this.historicosVetor[0];
 	}
 	
 	public void selecionarHistorico(int indice) {
-		if(indice >= 0 && indice < this.historicosVetor.length) {
+		/*if(indice >= 0 && indice < this.historicosVetor.length) {
 			this.historicoSelecionado = this.historicosVetor[indice];
-		}	
+		}*/	
+		if(indice >= 0 && indice < this.historicos.size()) {
+			this.historicoSelecionado = this.historicos.get(indice);
+		}
 	}
 	
 	public void armazenarHistorico() throws DiretorioNaoPodeSerCriadoException, JaExisteArquivoOuDiretorioException {
@@ -92,13 +107,13 @@ public class NucleoGeRel {
 		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
 		Linha[] linhas = relatorio.obterLinhas();
 		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
-			linhasTexto[i] = linhas[i].obterLinha();
+			linhasTexto[i] = linhas[i].obterTexto();
 		}
 		return linhasTexto;
 	}
 	
 	public int obterQuantidadeHistoricos() {
-		return this.historicosVetor.length;
+		return this.historicos.size();
 	}
 	
 	public int obterQuantidadeRelatorios() {
