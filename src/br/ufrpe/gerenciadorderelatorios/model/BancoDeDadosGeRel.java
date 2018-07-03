@@ -1,4 +1,9 @@
-	package br.ufrpe.gerenciadorderelatorios.model;
+package br.ufrpe.gerenciadorderelatorios.model;
+
+/**
+ * Essa classe realiza todas as operações de referentes ao armazenamento de dados em arquivos.
+ * @author Marcos Jose.
+ */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,23 +11,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import br.ufrpe.gerenciadorderelatorios.excecoes.*;
 
 public class BancoDeDadosGeRel {
-	private static final String NOME_ARQUIVO_BANCO = "indiceGeRel";
+	private static final String NOME_INDICE_BANCO = "indiceGeRel";
 	private static final String BANCO_DE_DADOS = "bd_gerel";
 	public static final String BD_HISTORICOS = "bd_historicos";
-	public static final String BD_ACESSO=  "bd_acesso";
 	
 	private File bancoDeDados;
 	private Estrutura estruturaIndiceBanco;
 	
-	/**Inicializa o banco de dados.*/
+	/**
+	 * Inicializa o banco de dados em um determinado local no sistema de arquivos do SO dado um caminho.
+	 * @param raizBanco string que representa o caminho.
+	 * */
 	public void iniciarBancoDeDados(String raizBanco) {
-		/*Recuperando o indice do banco de dados.*/
+		/*Recuperando o índice do banco de dados.*/
 		this.bancoDeDados = new File(this.construirCaminho(new String[] {raizBanco, BANCO_DE_DADOS}));
-		Estrutura estIndice = new Estrutura(null, "indice", BancoDeDadosGeRel.NOME_ARQUIVO_BANCO+".ser", null);
+		
+		/*Recuperando índice do banco de dados.*/
+		Estrutura estIndice = new Estrutura(null, "indice", BancoDeDadosGeRel.NOME_INDICE_BANCO+".ser", null);
 		try {
 			this.estruturaIndiceBanco = (Estrutura) this.consultar(estIndice);
 		} catch (ArquivoOuDiretorioNaoExisteException e) {
@@ -33,12 +41,11 @@ public class BancoDeDadosGeRel {
 		if(this.estruturaIndiceBanco != null) {
 			System.out.println("\t- indice carregado.");
 		} else {
+			
 			/*Criando a estrutura de diretórios para o banco de dados.*/
-			this.definirEstruturaBanco(new Estrutura(null, BANCO_DE_DADOS, NOME_ARQUIVO_BANCO, null));
+			this.definirEstruturaIndiceBanco(new Estrutura(null, BANCO_DE_DADOS, NOME_INDICE_BANCO, null));
 
 			Estrutura banco = new Estrutura(this.estruturaIndiceBanco, BD_HISTORICOS, null, null);
-			this.estruturaIndiceBanco.adicionar(banco);
-			banco = new Estrutura(this.estruturaIndiceBanco, BD_ACESSO, null, null);
 			this.estruturaIndiceBanco.adicionar(banco);
 					
 			try {
@@ -51,8 +58,12 @@ public class BancoDeDadosGeRel {
 		System.out.println("\t- banco inicializado.");
 	}
 	
-	/**Criar uma estrutura de pastas de acordo com o paramen	tro 'estrutura'.
-	 * @throws DiretorioNaoPodeSerCriadoException */
+	/**
+	 * Criar uma estrutura de pastas de acordo com o paramentro 'estrutura' no local especificado.
+	 * @param base que representa um determinado local.
+	 * @param estrutura representa a hierarquia de estruturas.
+	 * @throws DiretorioNaoPodeSerCriadoException.
+	 * */
 	private void criarEstrutura(File base, Estrutura estrutura) throws DiretorioNaoPodeSerCriadoException {
 		/*Não é criado um subdiretório como mesmo nome do diretório base.*/
 		if(!base.getName().equals(estrutura.obterDiretorioAtual())) {
@@ -73,9 +84,13 @@ public class BancoDeDadosGeRel {
 		}
 	}
 	
-	/**Salva o objeto gravavel no diretório apontado pela estrutura.
-	 * @throws JaExisteArquivoOuDiretorioException 
-	 * @throws DiretorioNaoPodeSerCriadoException */
+	/**
+	 * Salva o objeto gravavel no diretório apontado pela estrutura.
+	 * @param estrutura que representa a hierarquia de estruturas.
+	 * @param gravavel que representa o arquivo à ser gravado.
+	 * @throws JaExisteArquivoOuDiretorioException. 
+	 * @throws DiretorioNaoPodeSerCriadoException.
+	 * */
 	public void adicionar(Estrutura estrutura , Gravavel gravavel) throws JaExisteArquivoOuDiretorioException, DiretorioNaoPodeSerCriadoException {
 		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
 		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
@@ -147,9 +162,12 @@ public class BancoDeDadosGeRel {
 		}
 	}
 	
-	/**Remove o arquivo ou diretório especificado se houver.
-	 * @throws ArquivoOuDiretorioNaoExisteException 
-	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException*/
+	/**
+	 * Remove o arquivo ou diretório especificado apontado pela estrutura.
+	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório à ser removido.
+	 * @throws ArquivoOuDiretorioNaoExisteException.
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException.
+	 * */
 	public void remover(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
 		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
 		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
@@ -190,10 +208,14 @@ public class BancoDeDadosGeRel {
 		}
 	}
 	
-	/**Retorna o arquivo especificado se houver.
-	 * @throws ArquivoOuDiretorioNaoExisteException */
-	public Serializable consultar(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
-		Serializable arquivo = null;
+	/**
+	 * Retorna o arquivo apontado pela estrutura se houver.
+	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório à ser retornado.
+	 * @return um <code>Gravavel</code> que representa o arquivo recuperado.
+	 * @throws ArquivoOuDiretorioNaoExisteException.
+	 * */
+	public Gravavel consultar(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
+		Gravavel arquivo = null;
 		
 		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
 		String caminhoDiretorio = this.construirCaminho(new String[] {this.bancoDeDados.getAbsolutePath(), estrutura.obterCaminhoAncestrais()});
@@ -217,7 +239,7 @@ public class BancoDeDadosGeRel {
 					try {
 						arquivoDeEntrada = new FileInputStream(alvo.getAbsolutePath());
 						objetoDeEntrada = new ObjectInputStream(arquivoDeEntrada);
-						arquivo = (Serializable) objetoDeEntrada.readObject();
+						arquivo = (Gravavel) objetoDeEntrada.readObject();
 						
 					} catch (Exception ex) {
 						ex.printStackTrace();
@@ -255,7 +277,11 @@ public class BancoDeDadosGeRel {
 		return arquivo;
 	}
 	
-	/**Recebe um diretório e sub-diretórios e retorna o caminho completo*/
+	/**
+	 * Recebe uma lista de nomes de diretório e sub-diretórios e retorna o caminho formatado.
+	 * @param caminho que representa uma hierarquia de diretórios.
+	 * @return um <code>String</code> que representa o caminho de diretório formatado.
+	 * */
 	private String construirCaminho(String[] caminho) {
 		String caminhoConstruido = caminho[0];
 		for(int i = 1; i < caminho.length; i++) {
@@ -264,8 +290,10 @@ public class BancoDeDadosGeRel {
 		return caminhoConstruido;
 	}
 	
-	/**Adiciona a estrutura à estrutura geral do banco de dados que funciona como indice.
-	 * @author Marcos Jose*/
+	/**
+	 * Adiciona a estrutura ao índice do banco de dados.
+	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório.
+	 * */
 	private void adicionarAoIndice(Estrutura estrutura) {
 		
 		/*Descobrindo o banco de dados.*/
@@ -273,22 +301,18 @@ public class BancoDeDadosGeRel {
 		case "bd_historicos":
 			String estruturaAlvo = "est"+estrutura.obterListaSubDiretorios()[0].obterDiretorioAtual().substring(1, 5);
 			Estrutura banco = this.estruturaIndiceBanco.obterListaSubDiretorios()[0];
-			//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] Estrutura  de banco: "+banco.obterDiretorioAtual());
 			boolean adicionado = false;
 			
 			/*Verificando se existe alguma indexação.*/
 			if(banco.obterSubDiretorios() != null) {
 				
-				/*Obtendo estruturas 'indices' referentes a cada histórico.*/
+				/*Obtendo estruturas 'índices' referentes a cada histórico.*/
 				for(Estrutura e: banco.obterListaSubDiretorios()) {
-					//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura disponivel no banco: "+e.obterDiretorioAtual());
-					//System.out.println("\t[BancoDeDadosGeRel.adicionaraoIndice] estrutura procurada: "+estruturaAlvo);
 					
 					/*Verificando se a estrutura já esta indexada.*/
 					if(e.obterNomeArquivo().substring(0, 7).equals(estruturaAlvo)) {
 						
-						/*Escolhendo a posição no indice através da primeira letra do nome do arquivo.*/
-						//System.out.println("\t"+estrutura.obterNomeArquivo().substring(0, 1));
+						/*Escolhendo a posição no índice através da primeira letra do nome do arquivo.*/
 						switch(estrutura.obterNomeArquivo().substring(0, 1)) {
 						
 						case "h":
@@ -321,7 +345,7 @@ public class BancoDeDadosGeRel {
 							break;
 						}
 						
-						/*Salvando o arquivo de indice.*/
+						/*Salvando o arquivo de índice.*/
 						Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
 						estIndice.definirIndexavel(false);
 						try {
@@ -349,7 +373,7 @@ public class BancoDeDadosGeRel {
 				itemBanco.adicionar(estrutura);
 				banco.adicionar(itemBanco);
 				
-				/*Salvando indice.*/
+				/*Salvando índice.*/
 				Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
 				estIndice.definirIndexavel(false);
 				try {
@@ -369,10 +393,12 @@ public class BancoDeDadosGeRel {
 		}
 	}
 	
-	/**Remove a estrutura da estrutura geral do banco de dados que funciona como indice.
-	 * @author Marcos Jose
-	 * @throws ArquivoOuDiretorioNaoExisteException 
-	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException */
+	/**
+	 * Remove a estrutura do índice do banco de dados.
+	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório.
+	 * @throws ArquivoOuDiretorioNaoExisteException.
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException.
+	 * */
 	private void removerDoIndice(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
 		
 		/*Descobrindo o banco de dados.*/
@@ -385,7 +411,7 @@ public class BancoDeDadosGeRel {
 			/*Verificando se existe alguma indexação.*/
 			if(banco.obterSubDiretorios() != null) {
 				
-				/*Obtendo estruturas 'indices' referentes a cada histórico.*/
+				/*Obtendo estruturas 'índices' referentes a cada histórico.*/
 				for(Estrutura e: banco.obterSubDiretorios()) {
 					
 					/*Verificando se a estrutura já esta indexada.*/
@@ -396,7 +422,7 @@ public class BancoDeDadosGeRel {
 							e.remover(estrutura);
 							removido = true;
 							
-							/*Removendo o indice.*/
+							/*Removendo o índice.*/
 							Estrutura estIndice = new Estrutura(null, "indice", this.estruturaIndiceBanco.obterNomeArquivo()+".ser", null);
 							estIndice.definirIndexavel(false);
 							this.remover(estIndice);
@@ -431,16 +457,28 @@ public class BancoDeDadosGeRel {
 	public String toString() {
 		return "BancoDeDadosGeRel [bancoDeDados=" + bancoDeDados + ", estrutura=" + estruturaIndiceBanco + "]";
 	}
-
+	
+	/**
+	 * Retorna o bancoDeDados.
+	 * @return um <code>File</code> que contém a estrutura de arquivos do banco de dados.
+	 */
 	public File obterBancoDeDados() {
 		return bancoDeDados;
 	}
-
+	
+	/**
+	 * Retorna a estrutura índice do banco de dados.
+	 * @return uma <code>Estrutura</code> que representa o índice do banco de dados.
+	 * */
 	public Estrutura obterEstruturaIndiceBanco() {
 		return this.estruturaIndiceBanco;
 	}
-
-	public void definirEstruturaBanco(Estrutura estrutura) {
+	
+	/**
+	 * Defini o índice do banco de dados.
+	 * @param estrutura que representa o novo índice do banco de dados.
+	 */
+	public void definirEstruturaIndiceBanco(Estrutura estrutura) {
 		this.estruturaIndiceBanco = estrutura;
 	}
 }

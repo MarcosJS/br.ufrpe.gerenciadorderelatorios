@@ -53,10 +53,11 @@ public class TesteGeRel {
 			}
 			
 		}
+		teste.salvarHistorico();
+		teste.prepararNovoHistorico();
 		
 		System.out.println("---------------------------------------------------------------------------------------------------------------\n");
 		System.out.println("- Selecionando o segundo historico.");
-		teste.selecionarHistorico(1);
 		System.out.println("- Historico selecionado: "+teste.obterId());
 		
 		System.out.println("- Carregando o segundo conjunto de relatorios.");
@@ -70,6 +71,8 @@ public class TesteGeRel {
 			}
 			
 		}
+		teste.salvarHistorico();
+		teste.prepararNovoHistorico();
 		
 		System.out.println("---------------------------------------------------------------------------------------------------------------\n");
 		System.out.println("- Lendo todos os relatórios de cada histórico.\n");
@@ -83,7 +86,7 @@ public class TesteGeRel {
 			for(int i = 0; i < teste.obterQuantidadeRelatorios(); i++) {
 				
 				System.out.println("---------------------------------------------------------------------------------------------------------------\n");
-				System.out.println("- Imprimindo o "+(i+1)+"/3 relatorios.");
+				System.out.println("- Imprimindo o "+(i+1)+"/"+teste.obterQuantidadeRelatorios()+" relatorios.");
 				relatorioExibido = teste.obterRelatorio(i);
 				
 				for(String s: relatorioExibido) {
@@ -100,7 +103,7 @@ public class TesteGeRel {
 		for(int i = 0; i < teste.obterQuantidadeHistoricos(); i++) {
 			
 			System.out.println("---------------------------------------------------------------------------------------------------------------\n");
-			System.out.println("- Selecionando o "+(i+1)+"/2 historicos.");
+			System.out.println("- Selecionando o "+(i+1)+"/"+teste.obterQuantidadeHistoricos()+" historicos.");
 			teste.selecionarHistorico(i);
 			System.out.println("- Historico selecionado: "+teste.obterId());
 			
@@ -111,7 +114,6 @@ public class TesteGeRel {
 			}
 		
 		}
-		
 		
 		System.out.println("-------------------------------------- FIM DO SCRIPT DE TESTE DO GEREL ----------------------------------------------\n");
 	

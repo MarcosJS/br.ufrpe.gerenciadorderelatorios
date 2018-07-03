@@ -1,5 +1,10 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
+/**
+ * Essa classe é reponsavel por definir a hierarquia de pastas e servir como indice.
+ * @author Marcos Jose.
+ */
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -7,9 +12,6 @@ import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteExce
 import br.ufrpe.gerenciadorderelatorios.excecoes.ExclusaoDeArquivoOuDiretorioNegadaException;
 
 public class Estrutura extends Gravavel {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 10992113208536148L;
 	
 	private Estrutura pai;
@@ -17,6 +19,7 @@ public class Estrutura extends Gravavel {
 	private String nomeArquivo;
 	private ArrayList <Estrutura> subDiretorios;
 	private boolean indexavel;
+	
 	
 	public Estrutura(Estrutura pai, String diretorioAtual, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
 		this.definirPai(pai);

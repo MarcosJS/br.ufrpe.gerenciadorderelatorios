@@ -10,43 +10,47 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
 import br.ufrpe.gerenciadorderelatorios.model.*;
 
 public class NucleoGeRel {
 	
-	private HistoricoGeRel historicoSelecionado;
-	private HistoricoGeRel[] historicosVetor;
-	private ArrayList<HistoricoGeRel> historicos;
+	private PortifolioGeRel historicoSelecionado;
+	private ArrayList<PortifolioGeRel> historicos;
 	private BancoDeDadosGeRel bancoDeDados;
 	
 	public NucleoGeRel() {
-		this.historicos = new ArrayList<HistoricoGeRel>();
-		this.historicosVetor = new HistoricoGeRel[2];
+		this.historicos = new ArrayList<PortifolioGeRel>();
+		
+		/*Iniciando o banco de dados.*/
 		this.bancoDeDados = new BancoDeDadosGeRel();
 		this.bancoDeDados.iniciarBancoDeDados(System.getProperty("user.dir"));
-		this.historicosVetor[0] = new HistoricoGeRel();
 		
-		/*Acrescentando id do histórico ao relatório.*/
-		String newId = "h"+String.format("%04d", this.obterQuantidadeHistoricos() + 1);
-		this.historicosVetor[0].definirId(newId);
+		/*Carregando sistema a partir do banco de dados.*/
+		this.carregarHistoricos();
 		
-		this.historicosVetor[1] = new HistoricoGeRel();
-		/*Acrescentando id do histórico ao relatório.*/
-		newId = "h"+String.format("%04d", this.obterQuantidadeHistoricos() + 1);
-		
-		this.historicosVetor[1].definirId(newId);
-		
-		this.historicos.add(this.historicosVetor[0]);
-		this.historicos.add(this.historicosVetor[1]);
-		this.historicoSelecionado = this.historicosVetor[0];
+		this.prepararNovoHistorico();
 	}
 	
+	public void salvarHistorico() {
+		if(this.historicoSelecionado.obterId() == null) {
+			/*Acrescentando id do histórico ao relatório.*/
+			String newId = "h"+String.format("%04d", this.obterQuantidadeHistoricos() + 1);
+			this.historicoSelecionado.definirId(newId);
+			this.historicos.add(this.historicoSelecionado);
+			try {
+				this.armazenarHistorico();
+			} catch (DiretorioNaoPodeSerCriadoException | JaExisteArquivoOuDiretorioException e) {
+				e.printStackTrace();
+			}
+		} else {
+			
+		}
+	}
+
 	public void selecionarHistorico(int indice) {
-		/*if(indice >= 0 && indice < this.historicosVetor.length) {
-			this.historicoSelecionado = this.historicosVetor[indice];
-		}*/	
 		if(indice >= 0 && indice < this.historicos.size()) {
 			this.historicoSelecionado = this.historicos.get(indice);
 		}
@@ -88,7 +92,7 @@ public class NucleoGeRel {
 	    Linha[] linhasRel = new Linha[pdfLinhas.length];
 	    
 	    for(int i = 0; i < pdfLinhas.length; i++) {
-	    	linhasRel[i] = new Linha(pdfLinhas[i], i, i);
+	    	linhasRel[i] = new Linha(pdfLinhas[i], i);
 	    }
 	    
 	    Relatorio relatorio = new Relatorio(linhasRel);
@@ -103,7 +107,7 @@ public class NucleoGeRel {
 	}
 
 	public String[] obterRelatorio(int indice) {
-		Relatorio relatorio = this.historicoSelecionado.obterRelatorio(indice);
+		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
 		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
 		Linha[] linhas = relatorio.obterLinhas();
 		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
@@ -112,12 +116,48 @@ public class NucleoGeRel {
 		return linhasTexto;
 	}
 	
+	private void carregarHistoricos() {
+		
+		Estrutura indice = this.bancoDeDados.obterEstruturaIndiceBanco().obterListaSubDiretorios()[0];
+		if(indice.obterSubDiretorios() != null) {
+			
+			/*Obtendo estruturas 'indices' referentes a cada histórico.*/
+			PortifolioGeRel historicoRecuperado = null;
+			for(Estrutura e: indice.obterListaSubDiretorios()) {
+				try {
+					historicoRecuperado = (PortifolioGeRel) bancoDeDados.consultar(e.obterListaSubDiretorios()[0]);
+					historicoRecuperado.definirRelatorios(new ArrayList<Relatorio>());
+					System.out.println(historicoRecuperado);
+					
+					Relatorio relatorioRecuperado = null;
+					for(int i = 1; i< e.obterListaSubDiretorios().length; i++) {
+						relatorioRecuperado = (Relatorio) bancoDeDados.consultar(e.obterListaSubDiretorios()[i]);
+						System.out.println(relatorioRecuperado);
+						historicoRecuperado.adicionarRelatorio(relatorioRecuperado);
+					}
+
+					this.historicos.add(historicoRecuperado);
+				} catch (ArquivoOuDiretorioNaoExisteException e1) {
+					e1.printStackTrace();
+				}
+			}	
+		}
+	}
+	
 	public int obterQuantidadeHistoricos() {
 		return this.historicos.size();
 	}
 	
 	public int obterQuantidadeRelatorios() {
 		return this.historicoSelecionado.obterQuantidadeRelatorios();
+	}
+	
+	public PortifolioGeRel obterHistoricoSelecionado() {
+		return this.historicoSelecionado;
+	}
+	
+	public void prepararNovoHistorico() {
+		this.historicoSelecionado = new PortifolioGeRel();
 	}
 	
 	public String obterId() {
