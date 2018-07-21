@@ -20,7 +20,14 @@ public class Estrutura extends Gravavel {
 	private ArrayList <Estrutura> subDiretorios;
 	private boolean indexavel;
 	
-	
+	/**
+	 * Construtor Estrutura cria uma nova estrutura que pode representar um diretório e ou arquivo e pode ser indexável
+	 * ou não.
+	 * @param pai que representa o diretório imediatamente superior.
+	 * @param diretorioAtual que representa o diretório atual.
+	 * @param nomeArquivo que representa o nome do arquivo.
+	 * @param subDiretorios que representa um conjunto de sub diretórios.
+	 * */
 	public Estrutura(Estrutura pai, String diretorioAtual, String nomeArquivo, ArrayList<Estrutura> subDiretorios) {
 		this.definirPai(pai);
 		this.definirDiretorioAtual(diretorioAtual);
@@ -28,7 +35,11 @@ public class Estrutura extends Gravavel {
 		this.definirSubDiretorios(subDiretorios);
 		this.definirIndexavel(true);
 	}
-
+	
+	/**
+	 * Retorna a estrutura que representa o diretório de nível mais alto na hierarquia.
+	 * @return <code>Estrutura</code> que representa um diretório.
+	 * */
 	public Estrutura obterRaiz() {
 		Estrutura raiz = null;
 		
@@ -41,14 +52,17 @@ public class Estrutura extends Gravavel {
 		return raiz;
 	}
 	
+	/**
+	 * Retorna uma nova estrutura apartir de uma lista nomes de diretórios ordenados por nível e do nome do arquivo.
+	 * @param lista que representa a hierarquia de diretórios.
+	 * @param nomeArquivo que representa o nome do arquivo.
+	 * @return <code>Estrutura</code> que representa a nova estrutura.
+	 * */
 	public static Estrutura montarEstrutura(ArrayList <String> lista, String nomeArquivo) {
 		Estrutura resultado = null;
 		if(lista.size() == 1) {
 			resultado = new Estrutura(null, lista.get(0), nomeArquivo, null);
 		} else {
-			//ArrayList <Estrutura> temp = new ArrayList <Estrutura> ();
-			//temp.add(montarEstrutura(new ArrayList <String> (lista.subList(1, lista.size())), nomeArquivo));
-			//resultado = new Estrutura(lista.get(0), nomeArquivo, temp);
 			resultado = new Estrutura(null, lista.get(0), nomeArquivo, null);
 			resultado.adicionar(montarEstrutura(new ArrayList <String> (lista.subList(1, lista.size())), nomeArquivo));
 			resultado.obterListaSubDiretorios()[0].definirPai(resultado);
@@ -56,18 +70,25 @@ public class Estrutura extends Gravavel {
 		return resultado;
 	}
 	
+	/**
+	 * Retorna o caminho formatado a partir do diretório raiz até o diretório atual representado pela estrutura.
+	 * @return <code>String</code> que representa o caminho do arquivo.
+	 * */
 	public String obterCaminhoAncestrais() {
 		String resultado = null;
 		if(this.pai == null) {
 			resultado = this.diretorioAtual;
-			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
 		} else {
 			resultado = this.pai.obterCaminhoAncestrais()+File.separator+this.obterDiretorioAtual();
-			//System.out.println("\t- caminho obtido: "+this.diretorioAtual);
 		}
 		return resultado;
 	}
 	
+	/**
+	 * Retorna o caminho formatado a partir do diretório atual representado pela estrutura até o primeiro descendente
+	 * do ultimo nível.
+	 * @return <code>String</code> que representa o caminho do arquivo.
+	 * */
 	public String obterCaminhoDescendentes() {
 		String resultado = null;
 		if(this.subDiretorios == null) {
@@ -79,14 +100,22 @@ public class Estrutura extends Gravavel {
 		}
 		return resultado;
 	}
-
+	
+	/**
+	 * Adiciona uma nova estrutura que represeta um subdiretório.
+	 * @param e que representa um novo diretório.
+	 * */
 	public void adicionar(Estrutura e) {
 		if(this.subDiretorios == null) {
 			this.definirSubDiretorios(new ArrayList <Estrutura> ());
 		}
 		this.subDiretorios.add(e);
 	}
-	
+	/**
+	 * Adiciona uma nova estrutura que represeta um subdiretório em uma determinada posicão.
+	 * @param e que representa um novo diretório.
+	 * @param indice que representa a posição da estrutura.
+	 * */
 	public void adicionar(Estrutura e, int indice) {
 		if(this.subDiretorios == null) {
 			this.definirSubDiretorios(new ArrayList <Estrutura> ());
@@ -100,6 +129,10 @@ public class Estrutura extends Gravavel {
 		}
 	}
 	
+	/**
+	 * Cria mais um nível a partir do diretório raiz.
+	 * @param e que representa um novo diretório.
+	 * */
 	public void adicionarNivel(Estrutura e) {
 		if(this.subDiretorios == null) {
 			this.adicionar(e);
@@ -108,6 +141,12 @@ public class Estrutura extends Gravavel {
 		}
 	}
 	
+	/**
+	 * Remove uma estrutura que representa um subdiretório caso ele exista.
+	 * @param e que representa um novo diretório.
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException caso o usuário não tenha permissão para alterar a estrutura de arquivos.
+	 * @throws ArquivoOuDiretorioNaoExisteException caso um arquivo ou um dos diretórios do caminho não exista.
+	 * */
 	public void remover(Estrutura e) throws ExclusaoDeArquivoOuDiretorioNegadaException, ArquivoOuDiretorioNaoExisteException {
 		if(this.subDiretorios != null) {
 			if(!this.subDiretorios.remove(e)) {
@@ -119,6 +158,12 @@ public class Estrutura extends Gravavel {
 		}
 	}
 	
+	/**
+	 * Remove uma estrutura que representa um subdiretório de uma determinada posicao.
+	 * @param indice que representa a posição da estrutura.
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException caso o usuário não tenha permissão para alterar a estrutura de arquivos.
+	 * @throws ArquivoOuDiretorioNaoExisteException caso um arquivo ou um dos diretórios do caminho não exista.
+	 * */
 	public void remover(int indice) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
 		if(this.subDiretorios != null) {
 			if(indice >= 0 && indice < this.subDiretorios.size()) {

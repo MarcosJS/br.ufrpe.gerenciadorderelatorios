@@ -88,7 +88,7 @@ public class BancoDeDadosGeRel {
 	 * Salva o objeto gravavel no diretório apontado pela estrutura.
 	 * @param estrutura que representa a hierarquia de estruturas.
 	 * @param gravavel que representa o arquivo à ser gravado.
-	 * @throws JaExisteArquivoOuDiretorioException. 
+	 * @throws JaExisteArquivoOuDiretorioException caso o diretório ou arquivo já exista. 
 	 * @throws DiretorioNaoPodeSerCriadoException.
 	 * */
 	public void adicionar(Estrutura estrutura , Gravavel gravavel) throws JaExisteArquivoOuDiretorioException, DiretorioNaoPodeSerCriadoException {
@@ -165,8 +165,8 @@ public class BancoDeDadosGeRel {
 	/**
 	 * Remove o arquivo ou diretório especificado apontado pela estrutura.
 	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório à ser removido.
-	 * @throws ArquivoOuDiretorioNaoExisteException.
-	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException.
+	 * @throws ArquivoOuDiretorioNaoExisteException caso um arquivo ou um dos diretórios do caminho não exista.
+	 * @throws ExclusaoDeArquivoOuDiretorioNegadaException caso o usuário não tenha permissão para alterar a estrutura de arquivos.
 	 * */
 	public void remover(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException, ExclusaoDeArquivoOuDiretorioNegadaException {
 		/*Obtendo diretório para consultar se estrutura de pastas exite.*/
@@ -212,7 +212,7 @@ public class BancoDeDadosGeRel {
 	 * Retorna o arquivo apontado pela estrutura se houver.
 	 * @param estrutura que representa a hierarquia de estruturas e o arquivo ou diretório à ser retornado.
 	 * @return um <code>Gravavel</code> que representa o arquivo recuperado.
-	 * @throws ArquivoOuDiretorioNaoExisteException.
+	 * @throws ArquivoOuDiretorioNaoExisteException caso um arquivo ou um dos diretórios do caminho não exista.
 	 * */
 	public Gravavel consultar(Estrutura estrutura) throws ArquivoOuDiretorioNaoExisteException {
 		Gravavel arquivo = null;

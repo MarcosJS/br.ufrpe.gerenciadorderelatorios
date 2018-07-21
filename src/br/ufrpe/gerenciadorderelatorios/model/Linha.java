@@ -6,20 +6,25 @@ package br.ufrpe.gerenciadorderelatorios.model;
  */
 
 public class Linha extends Gravavel{
+	public enum Condicao {
+		NOVA, EXCLUIDA, ESTAVEL;
+	}
 	
 	private static final long serialVersionUID = 4929477468964210438L;
 	private int posicaoOriginal;
-	private String Relatorio;//O atributo relatório só atualizado se o relatório não for temporário
+	private String relatorio;//O atributo relatório só atualizado se o relatório não for temporário
 	private String texto;
+	private Condicao condicao;
 	
 	/**
 	 * Construtor Linha.
-	 * @param linha que representa o conteúdo de texto.
+	 * @param texto que representa o conteúdo de texto.
 	 * @param posicaOriginal que representa a ordem em relacao ao texto.
 	 */
 	public Linha(String texto, int posicaOriginal) {
 		this.texto = texto;
 		this.posicaoOriginal = posicaOriginal;
+		this.definirCondicao(Condicao.NOVA);
 	}
 	
 	/**
@@ -35,7 +40,7 @@ public class Linha extends Gravavel{
 	* @return uma <code>String</code> que representa o id do relatório o qual a linha pertence.
 	*/
 	public String obterRelatorio() {
-		return Relatorio;
+		return relatorio;
 	}
 	
 	/**
@@ -43,7 +48,7 @@ public class Linha extends Gravavel{
 	 * @param idRelatorio que representa o relatório o qual a linha pertence.
 	 */
 	public void definirRelatorio(String idRelatorio) {
-		this.Relatorio = idRelatorio;
+		this.relatorio = idRelatorio;
 	}
 	
 	/**
@@ -52,5 +57,21 @@ public class Linha extends Gravavel{
 	*/
 	public String obterTexto() {
 		return this.texto;
+	}
+
+	/**
+	* Obtêm a condição. 
+	* @return uma <code>Condicao</code> que representa a condicao.
+	*/
+	public Condicao obterCondicao() {
+		return condicao;
+	}
+
+	/**
+	 * Defini a condição.
+	 * @param condicao que representa a nova condição da linha.
+	 */
+	public void definirCondicao(Condicao condicao) {
+		this.condicao = condicao;
 	}
 }

@@ -1,5 +1,10 @@
-/***/
 package br.ufrpe.gerenciadorderelatorios.control;
+
+/**
+ * Essa classe concentra as principais funcionalidades do sistema e coordena os objetos da camada de dados.
+ * @author Daniel Bruno.
+ * @author Marcos Jose.
+ */
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +26,9 @@ public class NucleoGeRel {
 	private ArrayList<PortifolioGeRel> historicos;
 	private BancoDeDadosGeRel bancoDeDados;
 	
+	/**
+	 * Construtor NucleoGeRel que inicializa o banco de dados, carrega os dados do sistema.
+	 * */
 	public NucleoGeRel() {
 		this.historicos = new ArrayList<PortifolioGeRel>();
 		
@@ -34,6 +42,9 @@ public class NucleoGeRel {
 		this.prepararNovoHistorico();
 	}
 	
+	/**
+	 * Adiciona o histórico selecionado a lista de históricos e o armazena no banco de dados.
+	 * */
 	public void salvarHistorico() {
 		if(this.historicoSelecionado.obterId() == null) {
 			/*Acrescentando id do histórico ao relatório.*/
@@ -46,16 +57,29 @@ public class NucleoGeRel {
 				e.printStackTrace();
 			}
 		} else {
-			
+			try {
+				this.armazenarHistorico();
+			} catch (DiretorioNaoPodeSerCriadoException | JaExisteArquivoOuDiretorioException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
+	
+	/**
+	 * Seleciona um histórico da lista.
+	 * @param indice que representa a posição do histórico na lista.
+	 * */
 	public void selecionarHistorico(int indice) {
 		if(indice >= 0 && indice < this.historicos.size()) {
 			this.historicoSelecionado = this.historicos.get(indice);
 		}
 	}
 	
+	/**
+	 * Armazena o histórico e os relatórios pertencentes no banco de dados separadademente.
+	 * @throws DiretorioNaoPodeSerCriadoException.
+	 * @throws JaExisteArquivoOuDiretorioException caso o arquivo já exista.
+	 * */
 	public void armazenarHistorico() throws DiretorioNaoPodeSerCriadoException, JaExisteArquivoOuDiretorioException {
 		/*Salvando os historicos.*/
 		String[] camHistorico = {BancoDeDadosGeRel.BD_HISTORICOS, this.historicoSelecionado.obterId()};
@@ -82,7 +106,12 @@ public class NucleoGeRel {
 		}
 	}
 	
-	/* Converte o arquivo para objeto Relatorio.*/
+	/**
+	 * Converte um arquivo pdf para objeto Relatorio.
+	 * @param arquivo que representa o arquivo pdf.
+	 * @throws InvalidPasswordException caso haja um erro no carregamento do arquivo.
+	 * @throws IOException caso haja um erro no carregamento do arquivo.
+	 * */
 	public void carregarRelatorioPdf(File arquivo) throws InvalidPasswordException, IOException {
 		PDDocument document = null;
         document = PDDocument.load(arquivo);
@@ -102,10 +131,19 @@ public class NucleoGeRel {
 	    
 	}
 	
+	/**
+	 * Adiciona um novo relatório ao histórico.
+	 * @param rel que representa o relatorio a ser adicionado.
+	 * */
 	private void adicionarRelatorio(Relatorio rel) {
 		this.historicoSelecionado.adicionarRelatorio(rel);
 	}
-
+	
+	/**
+	 * Retorna um vertor de String.
+	 * @param indice que representa a posicao do relatório na lista.
+	 * @return <code>String[]</code> que representa o relatorio selecionado.
+	 * */
 	public String[] obterRelatorio(int indice) {
 		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
 		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
@@ -116,6 +154,9 @@ public class NucleoGeRel {
 		return linhasTexto;
 	}
 	
+	/**
+	 * Carrega todos os históricos armazenados no banco de dados.
+	 */
 	private void carregarHistoricos() {
 		
 		Estrutura indice = this.bancoDeDados.obterEstruturaIndiceBanco().obterListaSubDiretorios()[0];
@@ -144,22 +185,41 @@ public class NucleoGeRel {
 		}
 	}
 	
+	/**
+	 * Retorna o número de históticos.
+	 * @return <code>Integer</code> que representa a quantidade.
+	 * */
 	public int obterQuantidadeHistoricos() {
 		return this.historicos.size();
 	}
 	
+	/**
+	 * Retorna o número de relatórios do histórico selecionado.
+	 * @return <code>Integer</code> que representa a quantidade.
+	 * */
 	public int obterQuantidadeRelatorios() {
 		return this.historicoSelecionado.obterQuantidadeRelatorios();
 	}
 	
+	/**
+	 * Retorna o histórico selecionado.
+	 * @return <code>PortifolioGeRel</code> que representa o histórico.
+	 * */
 	public PortifolioGeRel obterHistoricoSelecionado() {
 		return this.historicoSelecionado;
 	}
 	
+	/**
+	 * Criar um novo histórico.
+	 */
 	public void prepararNovoHistorico() {
 		this.historicoSelecionado = new PortifolioGeRel();
 	}
 	
+	/**
+	 * Retorna o identificador do histórico selecionado.
+	 * @return <code>String</code> que representa o identificador.
+	 * */
 	public String obterId() {
 		return this.historicoSelecionado.obterId();
 	}

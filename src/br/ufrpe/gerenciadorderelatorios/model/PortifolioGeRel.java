@@ -70,7 +70,7 @@ public class PortifolioGeRel extends Gravavel{
 	
 	/**
 	 * Retorna a lista completa de relatorio.
-	 * @return um <code>ArrayList\<Relatorio\></code> que representa um lista de relatórios.
+	 * @return um ArrayList que representa um lista de relatórios.
 	 */
 	public ArrayList<Relatorio> obterRelatorios() {
 		return relatorios;
