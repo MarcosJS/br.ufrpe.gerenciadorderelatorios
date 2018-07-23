@@ -1,15 +1,13 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
+import java.util.ArrayList;
+
 /**
  * Essa classe abstrai uma linha e um relatório ou documento de texto.
  * @author Daniel Bruno.
  */
 
 public class Linha extends Gravavel{
-	public enum Condicao {
-		NOVA, EXCLUIDA, ESTAVEL;
-	}
-	
 	private static final long serialVersionUID = 4929477468964210438L;
 	private int posicaoOriginal;
 	private String relatorio;//O atributo relatório só atualizado se o relatório não for temporário
@@ -25,6 +23,26 @@ public class Linha extends Gravavel{
 		this.texto = texto;
 		this.posicaoOriginal = posicaOriginal;
 		this.definirCondicao(Condicao.NOVA);
+	}
+	
+	public int calcNovaPosicao(Linha[] novoRelatorio) {
+		int estaveis = 0;
+		int indice = 0;
+		System.out.println("posicao original: "+this.posicaoOriginal);
+		for(int i = 0; estaveis < this.posicaoOriginal; i++) {
+			if(novoRelatorio[i].condicao.equals(Condicao.ESTAVEL)) {
+				System.out.println("é estavel"+estaveis + 1);
+				System.out.println("indice: "+i);
+				estaveis++;
+				indice = i;
+			}
+		}
+		
+		return indice;
+	}
+	
+	public int calcNovaPosicao(ArrayList<Linha> array) {
+		return this.calcNovaPosicao(array.toArray(new Linha[array.size()]));
 	}
 	
 	/**
@@ -74,4 +92,23 @@ public class Linha extends Gravavel{
 	public void definirCondicao(Condicao condicao) {
 		this.condicao = condicao;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Linha other = (Linha) obj;
+		if (texto == null) {
+			if (other.texto != null)
+				return false;
+		} else if (!texto.equals(other.texto))
+			return false;
+		return true;
+	}
+	
+	
 }

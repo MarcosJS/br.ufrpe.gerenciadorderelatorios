@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import br.ufrpe.gerenciadorderelatorios.model.Linha;
+
 public class Relatorios {
 	public static void imprimirConsoleConsignados(String[] relatorio) {
 		for(String linha: relatorio) {
@@ -22,7 +24,7 @@ public class Relatorios {
 		}
 	}
 	
-	public static void gerarArquivo(String[] relatorio, String cabecalho, String nomeArquivo) throws IOException {
+	public static void gerarArquivo(Linha[] relatorio, String cabecalho, String nomeArquivo) throws IOException {
 		int consigPPag = 59;
 		int linhas = relatorio.length;
 		//System.out.println(linhas);
@@ -60,7 +62,7 @@ public class Relatorios {
 			if(i % consigPPag == 0) {
 				pag++;
 			}
-        	contents[pag].showText(relatorio[i - 1]);
+        	contents[pag].showText(relatorio[i - 1].obterTexto());
 		    contents[pag].newLine();
 		}
 		
@@ -73,7 +75,7 @@ public class Relatorios {
         doc.close();
 	}
 	
-	public static StyledDocument obterRelatorioRenderizado(String[] relatorio, String cabecalho) throws BadLocationException {
+	public static StyledDocument obterRelatorioRenderizado(/*String*/Linha[] relatorio, String cabecalho) throws BadLocationException {
 		StyleContext contexto = new StyleContext();
 		StyledDocument documento = new DefaultStyledDocument(contexto);
 		SimpleAttributeSet justificado = new SimpleAttributeSet();
@@ -90,9 +92,14 @@ public class Relatorios {
 	    StyleConstants.setAlignment(left, StyleConstants.ALIGN_LEFT);
 	    StyleConstants.setFontFamily(left, "Consolas");
 	    
-	    for(String linha: relatorio) {
+	    /*for(String linha: relatorio) {
 			offset = documento.getLength();
 			documento.insertString(offset, "\n"+linha, left);
+		}*/
+	    
+	    for(Linha linha: relatorio) {
+			offset = documento.getLength();
+			documento.insertString(offset, "\n"+linha.obterTexto(), left);
 		}
 			
 		return documento;

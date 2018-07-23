@@ -1,7 +1,6 @@
 package br.ufrpe.gerenciadorderelatorios;
 
 import java.io.File;
-import java.io.IOException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
 import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.JaExisteArquivoOuDiretorioException;
@@ -45,13 +44,7 @@ public class TesteGeRel {
 		System.out.println("- Carregando o primeiro conjunto de relatorios.");
 				
 		for(int i = 0; i < 3; i++) {
-			
-			try {
-				teste.carregarRelatorioPdf(conjunto1[i]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+			teste.carregarArquivo(conjunto1[i]);	
 		}
 		teste.salvarHistorico();
 		teste.prepararNovoHistorico();
@@ -63,13 +56,7 @@ public class TesteGeRel {
 		System.out.println("- Carregando o segundo conjunto de relatorios.");
 		
 		for(int i = 0; i < 3; i++) {
-			
-			try {
-				teste.carregarRelatorioPdf(conjunto2[i]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+			teste.carregarArquivo(conjunto2[i]);
 		}
 		teste.salvarHistorico();
 		teste.prepararNovoHistorico();

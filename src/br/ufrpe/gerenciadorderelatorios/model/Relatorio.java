@@ -1,13 +1,20 @@
 package br.ufrpe.gerenciadorderelatorios.model;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+
 /**
  * Essa classe abstrai um relatório ou documento de texto.
  * @author Marcos Jose.
  */
 
-public class Relatorio extends Gravavel{
+public abstract class Relatorio extends Gravavel{
 	private static transient  final long serialVersionUID = -9063960994820430012L;
-	private Linha[] linhas;
+	private Linha[] relatorioOriginal;
+	private ArrayList<Linha> diffRelatorio;
 	private String historico;
 	
 	/**
@@ -15,31 +22,103 @@ public class Relatorio extends Gravavel{
 	 * @param linhas[] que representa todas as linhas do relatório.
 	 */
 	public Relatorio(Linha[] linhas) {
-		this.definirLinhas(linhas);
+		this.definirRelatorioOriginal(linhas);
 	}
 	
 	/**
-	* Obtêm linhas[]. 
-	* @return um <code>String[]</code> que representa todas as linhas do relatorio.
+	 * Construtor Relatorio.
+	 * @param arquivo que representa o arquivo pdf.
+	 * */
+	public Relatorio(File arquivo) {
+		try {
+			this.relatorioOriginal = this.carregarArquivo(arquivo);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Metodo abstrato que converte um arquivo pdf em um objeto Relatorio.
+	 * @param arquivo que representa o arquivo pdf.
+	 * @return um <code>Linha[]</code> que representa todas as linhas extraidas do pdf.
+	 * @throws InvalidPasswordException dependendo da implementação caso haja um erro no carregamento do arquivo.
+	 * @throws IOException dependendo da implementação caso haja um erro no carregamento do arquivo. 
+	 **/
+	abstract Linha[] carregarArquivo(File arquivo) throws InvalidPasswordException, IOException;
+	
+	public void diff(Relatorio rel) {
+		this.diffRelatorio = new ArrayList<Linha>();
+		this.definirEstaveis(rel);
+		this.definirExcluidas(rel);
+	}
+	
+	private void definirEstaveis(Relatorio rel) {
+		if(rel == null) {
+			for(Linha l: this.relatorioOriginal) {
+				Linha novaLinha = new Linha(l.obterTexto(), l.obterPosicaoOriginal());
+				this.diffRelatorio.add(novaLinha);
+			}
+		} else {
+			for (Linha l : this.relatorioOriginal) {
+				for (Linha lRel : rel.obterRelatorioOriginal()) {
+					Linha novaLinha = new Linha(l.obterTexto(), l.obterPosicaoOriginal());
+					if (novaLinha.equals(lRel)) {
+						novaLinha.definirCondicao(Condicao.ESTAVEL);
+					}
+					this.diffRelatorio.add(novaLinha);
+				}
+			} 
+		}
+	}
+	
+	private void definirExcluidas(Relatorio rel) {
+		if (rel != null) {
+			for (Linha lRelAnterior : rel.obterRelatorioOriginal()) {
+
+				Condicao condicao = Condicao.EXCLUIDA;
+
+				for (Linha l : this.relatorioOriginal) {
+					if (lRelAnterior.equals(l)) {
+						condicao = Condicao.ESTAVEL;
+						break;
+					}
+				}
+
+				if (condicao.equals(Condicao.EXCLUIDA)) {
+					Linha linhaExcluida = new Linha(lRelAnterior.obterTexto(), lRelAnterior.obterPosicaoOriginal());
+					linhaExcluida.definirCondicao(condicao);
+					this.diffRelatorio.add(linhaExcluida.calcNovaPosicao(this.diffRelatorio), linhaExcluida);
+				}
+			} 
+		}
+	}
+	
+	/**
+	* Obtêm relatorioOriginal[]. 
+	* @return um <code>String[]</code> que representa todas as linhas do relatorio original.
 	*/	
-	public Linha[] obterLinhas() {
-		return linhas;
+	public Linha[] obterRelatorioOriginal() {
+		return relatorioOriginal;
 	}
 	
 	/**
 	 * Defini linhas[].
 	 * @param linhas[] que representa todas as linhas do relatório.
 	 */
-	private void definirLinhas(Linha[] linhas) {
-		this.linhas = linhas;
+	private void definirRelatorioOriginal(Linha[] linhas) {
+		this.relatorioOriginal = linhas;
 	}
 	
+	public ArrayList<Linha> obterDiffRelatorio() {
+		return diffRelatorio;
+	}
+
 	/**
 	 * Obtêm o numero de linhas do relatório.
 	 * @return um <code>integer</code> que representa a quantidade de linhas do relatório.
 	 */
 	public int obterQuantLinhas() {
-		return linhas.length;
+		return relatorioOriginal.length;
 	}
 	
 	/**
@@ -66,7 +145,7 @@ public class Relatorio extends Gravavel{
 	@Override
 	public void definirId(String id) {
 		super.definirId(id);
-		for(Linha l: this.linhas) {
+		for(Linha l: this.relatorioOriginal) {
 			l.definirRelatorio(this.obterId());
 		}
 	}

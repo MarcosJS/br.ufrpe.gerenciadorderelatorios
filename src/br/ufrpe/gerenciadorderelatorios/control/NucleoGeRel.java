@@ -7,13 +7,8 @@ package br.ufrpe.gerenciadorderelatorios.control;
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import br.ufrpe.gerenciadorderelatorios.excecoes.ArquivoOuDiretorioNaoExisteException;
 import br.ufrpe.gerenciadorderelatorios.excecoes.DiretorioNaoPodeSerCriadoException;
@@ -107,28 +102,12 @@ public class NucleoGeRel {
 	}
 	
 	/**
-	 * Converte um arquivo pdf para objeto Relatorio.
+	 * Converte um arquivo pdf em um objeto Relatorio.
 	 * @param arquivo que representa o arquivo pdf.
-	 * @throws InvalidPasswordException caso haja um erro no carregamento do arquivo.
-	 * @throws IOException caso haja um erro no carregamento do arquivo.
 	 * */
-	public void carregarRelatorioPdf(File arquivo) throws InvalidPasswordException, IOException {
-		PDDocument document = null;
-        document = PDDocument.load(arquivo);
-	    PDFTextStripper stripper = new PDFTextStripper();
-	    String pdfText = stripper.getText(document).toString();
-	    String pdfLinhas[] = pdfText.split("\n");
-	    Linha[] linhasRel = new Linha[pdfLinhas.length];
-	    
-	    for(int i = 0; i < pdfLinhas.length; i++) {
-	    	linhasRel[i] = new Linha(pdfLinhas[i], i);
-	    }
-	    
-	    Relatorio relatorio = new Relatorio(linhasRel);
+	public void carregarArquivo(File arquivo) {
+		RelatorioPDF relatorio = new RelatorioPDF(arquivo);
 	    this.adicionarRelatorio(relatorio);
-	    
-	    document.close();
-	    
 	}
 	
 	/**
@@ -136,6 +115,8 @@ public class NucleoGeRel {
 	 * @param rel que representa o relatorio a ser adicionado.
 	 * */
 	private void adicionarRelatorio(Relatorio rel) {
+		int relAnterior = this.historicoSelecionado.obterQuantidadeRelatorios() - 1;
+		rel.diff(this.historicoSelecionado.consultarRelatorio(relAnterior));
 		this.historicoSelecionado.adicionarRelatorio(rel);
 	}
 	
@@ -147,11 +128,27 @@ public class NucleoGeRel {
 	public String[] obterRelatorio(int indice) {
 		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
 		String[] linhasTexto = new String[relatorio.obterQuantLinhas()];
-		Linha[] linhas = relatorio.obterLinhas();
+		Linha[] linhas = relatorio.obterRelatorioOriginal();
 		for(int i = 0; i < relatorio.obterQuantLinhas(); i++) {
 			linhasTexto[i] = linhas[i].obterTexto();
 		}
 		return linhasTexto;
+	}
+	
+	public Linha[] obterDiffRelatorio(int indice) {
+		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
+		int tamanho = relatorio.obterDiffRelatorio().size();
+		//String[] linhasTexto = new String[tamanho];
+		Linha[] linhas = relatorio.obterDiffRelatorio().toArray(new Linha[tamanho]);
+		/*for(int i = 0; i < tamanho; i++) {
+			linhasTexto[i] = linhas[i].obterTexto();
+		}*/
+		return /*linhasTexto*/linhas;
+	}
+	
+	public Linha[] obterNovas(int indice) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**
@@ -222,5 +219,15 @@ public class NucleoGeRel {
 	 * */
 	public String obterId() {
 		return this.historicoSelecionado.obterId();
+	}
+
+	public Linha[] obterExcluidos(int indice) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Linha[] obterEstaveis(int indice) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

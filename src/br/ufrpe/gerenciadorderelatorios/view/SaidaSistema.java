@@ -10,6 +10,8 @@ import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
+import br.ufrpe.gerenciadorderelatorios.model.Linha;
+
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -18,7 +20,7 @@ import javax.swing.JMenuBar;
 
 public class SaidaSistema extends JPanel {
 	public static enum TipoRelatorio {
-		COMPLETO, INCLUIDOS, EXCLUIDOS, INALTERADOS;
+		COMPLETO, NOVAS, EXCLUIDAS, ESTAVEIS;
 	}
 	/**
 	 * 
@@ -28,7 +30,7 @@ public class SaidaSistema extends JPanel {
 	private int indice;
 	private JScrollPane scrollPane;
 	private NucleoGeRel cGR;
-	private String relExibido[] = null;
+	private Linha relExibido[] = null;
 	private String cabecalho = null;
 	private String nomeArq = null;
 	private Color corFaixas;
@@ -137,19 +139,19 @@ public class SaidaSistema extends JPanel {
 	public void renderizarRelatorio() {
 		switch(this.tipoRelatorio) {
 		case COMPLETO:
-			this.relExibido = cGR.obterRelatorio(this.indice);
+			this.relExibido = cGR.obterDiffRelatorio(this.indice);
 			this.cabecalho = "RELATÓRIO COMPLETO";
 			break;
-		case INCLUIDOS:
-			this.relExibido = cGR.obterIncluidos(this.indice);
-			this.cabecalho = "ÍTENS INCLUÍDOS NO RELATRIO";
+		case NOVAS:
+			this.relExibido = cGR.obterNovas(this.indice);
+			this.cabecalho = "ÍTENS NOVOS NO RELATRIO";
 			break;
-		case EXCLUIDOS:
+		case EXCLUIDAS:
 			this.relExibido = cGR.obterExcluidos(this.indice);
 			this.cabecalho = "ÍTENS EXCLUÍDOS DO RELATÓRIO";
 			break;
-		case INALTERADOS:
-			this.relExibido = cGR.obterInalterados(this.indice);
+		case ESTAVEIS:
+			this.relExibido = cGR.obterEstaveis(this.indice);
 			this.cabecalho = "ÍTENS INALTERADOS NO RELATÓRIO";
 			break;
 		default:
@@ -159,7 +161,7 @@ public class SaidaSistema extends JPanel {
 		PainelTextoDestacado textPane;
 		
 		try {
-			textPane = new PainelTextoDestacado(Relatorios.obterRelatorioRenderizado(this.relExibido, this.cabecalho), this.corFaixas, this.corSelecao);
+			textPane = new PainelTextoDestacado(/*Relatorios.obterRelatorioRenderizado(this.relExibido, this.cabecalho)*/this.relExibido, this.cabecalho, this.corFaixas, this.corSelecao);
 			textPane.setEditable(false);
 			this.scrollPane.setViewportView(textPane);
 		} catch (BadLocationException e) {

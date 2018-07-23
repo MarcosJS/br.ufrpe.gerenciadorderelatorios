@@ -101,7 +101,7 @@ public class MenuSistema extends JPanel {
     	btnNovos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INCLUIDOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.NOVAS);
 					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
@@ -119,7 +119,7 @@ public class MenuSistema extends JPanel {
     	btnExcludos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.EXCLUIDOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.EXCLUIDAS);
 					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
@@ -137,7 +137,7 @@ public class MenuSistema extends JPanel {
     	btnInalterado.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (getEstaCarregado()) {
-    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.INALTERADOS);
+    				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.ESTAVEIS);
 					saida.renderizarRelatorio();
 				} else {
 					JOptionPane.showMessageDialog(null, "Os arquivos não foram carregados corretamente!", "Alerta", JOptionPane.WARNING_MESSAGE);
