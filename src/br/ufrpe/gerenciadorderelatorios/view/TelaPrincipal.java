@@ -31,7 +31,7 @@ public class TelaPrincipal extends JFrame {
     	
     	PainelDeSelecaoDeArquivo PainelArq = new PainelDeSelecaoDeArquivo(controle);
     	
-    	SaidaSistema aba = new SaidaSistema(controle, new Color(230, 230, 255), new Color(150,255, 150));
+    	SaidaSistema aba = new SaidaSistema(controle, new Color(230, 230, 255), new Color(170, 170, 255));
     	
     	MenuSistema menu = new MenuSistema(controle, new Color(100, 149, 237), SystemColor.WHITE, PainelArq, aba);
     	

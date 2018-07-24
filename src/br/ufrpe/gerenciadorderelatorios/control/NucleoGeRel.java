@@ -138,12 +138,9 @@ public class NucleoGeRel {
 	public Linha[] obterDiffRelatorio(int indice) {
 		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
 		int tamanho = relatorio.obterDiffRelatorio().size();
-		//String[] linhasTexto = new String[tamanho];
 		Linha[] linhas = relatorio.obterDiffRelatorio().toArray(new Linha[tamanho]);
-		/*for(int i = 0; i < tamanho; i++) {
-			linhasTexto[i] = linhas[i].obterTexto();
-		}*/
-		return /*linhasTexto*/linhas;
+		
+		return linhas;
 	}
 	
 	public Linha[] obterNovas(int indice) {

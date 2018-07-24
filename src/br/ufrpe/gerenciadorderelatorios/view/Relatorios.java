@@ -27,9 +27,7 @@ public class Relatorios {
 	public static void gerarArquivo(Linha[] relatorio, String cabecalho, String nomeArquivo) throws IOException {
 		int consigPPag = 59;
 		int linhas = relatorio.length;
-		//System.out.println(linhas);
 		int paginas = (linhas/consigPPag) + 1;
-		//System.out.println(paginas);
 		PDDocument doc = new PDDocument();
         PDPage[] page = new PDPage[paginas];
         PDPageContentStream[] contents = new PDPageContentStream[paginas];
@@ -43,7 +41,7 @@ public class Relatorios {
         
         for(int i = 0; i < paginas; i++) {
        		contents[i].beginText();
-            contents[i].setFont(font, 10);
+            contents[i].setFont(font, 9);
             contents[i].setLeading(12.5f);
             contents[i].newLineAtOffset(10, 775);
             

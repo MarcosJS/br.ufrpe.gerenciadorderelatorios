@@ -46,47 +46,48 @@ public abstract class Relatorio extends Gravavel{
 	 **/
 	abstract Linha[] carregarArquivo(File arquivo) throws InvalidPasswordException, IOException;
 	
-	public void diff(Relatorio rel) {
+	public void diff(Relatorio relAnterior) {
 		this.diffRelatorio = new ArrayList<Linha>();
-		this.definirEstaveis(rel);
-		this.definirExcluidas(rel);
+		this.definirEstaveis(relAnterior);
+		this.definirExcluidas(relAnterior);
 	}
 	
-	private void definirEstaveis(Relatorio rel) {
-		if(rel == null) {
-			for(Linha l: this.relatorioOriginal) {
-				Linha novaLinha = new Linha(l.obterTexto(), l.obterPosicaoOriginal());
+	private void definirEstaveis(Relatorio relAnterior) {
+		if(relAnterior == null) {
+			for(Linha linhaOriginal: this.relatorioOriginal) {
+				Linha novaLinha = new Linha(linhaOriginal.obterTexto(), linhaOriginal.obterPosicaoOriginal());
 				this.diffRelatorio.add(novaLinha);
 			}
 		} else {
-			for (Linha l : this.relatorioOriginal) {
-				for (Linha lRel : rel.obterRelatorioOriginal()) {
-					Linha novaLinha = new Linha(l.obterTexto(), l.obterPosicaoOriginal());
-					if (novaLinha.equals(lRel)) {
+			for (Linha linhaRelAtual : this.relatorioOriginal) {
+				Linha novaLinha = new Linha(linhaRelAtual.obterTexto(), linhaRelAtual.obterPosicaoOriginal());
+				for (Linha linhaRelAnterior : relAnterior.obterRelatorioOriginal()) {
+					if (novaLinha.equals(linhaRelAnterior)) {
 						novaLinha.definirCondicao(Condicao.ESTAVEL);
 					}
-					this.diffRelatorio.add(novaLinha);
 				}
-			} 
+				this.diffRelatorio.add(novaLinha);
+			}
 		}
 	}
-	
-	private void definirExcluidas(Relatorio rel) {
-		if (rel != null) {
-			for (Linha lRelAnterior : rel.obterRelatorioOriginal()) {
+
+	private void definirExcluidas(Relatorio relAnterior) {
+		if (relAnterior != null) {
+			for (Linha linhaRelAnterior : relAnterior.obterRelatorioOriginal()) {
 
 				Condicao condicao = Condicao.EXCLUIDA;
 
-				for (Linha l : this.relatorioOriginal) {
-					if (lRelAnterior.equals(l)) {
+				for (Linha linhaRelAtual : this.relatorioOriginal) {
+					if (linhaRelAnterior.equals(linhaRelAtual)) {
 						condicao = Condicao.ESTAVEL;
 						break;
 					}
 				}
 
 				if (condicao.equals(Condicao.EXCLUIDA)) {
-					Linha linhaExcluida = new Linha(lRelAnterior.obterTexto(), lRelAnterior.obterPosicaoOriginal());
+					Linha linhaExcluida = new Linha(linhaRelAnterior.obterTexto(), linhaRelAnterior.obterPosicaoOriginal());
 					linhaExcluida.definirCondicao(condicao);
+					//Inserindo a linha excluida no diff
 					this.diffRelatorio.add(linhaExcluida.calcNovaPosicao(this.diffRelatorio), linhaExcluida);
 				}
 			} 

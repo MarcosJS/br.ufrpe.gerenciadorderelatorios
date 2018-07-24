@@ -26,18 +26,17 @@ public class Linha extends Gravavel{
 	}
 	
 	public int calcNovaPosicao(Linha[] novoRelatorio) {
-		int estaveis = 0;
+		int linhasPuladas = 0;
 		int indice = 0;
 		System.out.println("posicao original: "+this.posicaoOriginal);
-		for(int i = 0; estaveis < this.posicaoOriginal; i++) {
-			if(novoRelatorio[i].condicao.equals(Condicao.ESTAVEL)) {
-				System.out.println("é estavel"+estaveis + 1);
-				System.out.println("indice: "+i);
-				estaveis++;
-				indice = i;
+		
+		for(int i = 0; linhasPuladas < this.posicaoOriginal; i++) {
+			if(novoRelatorio[i].condicao.equals(Condicao.ESTAVEL) || novoRelatorio[i].condicao.equals(Condicao.EXCLUIDA)) {
+				linhasPuladas++;
+				indice = i + 1;
 			}
 		}
-		
+		System.out.println("indice: "+indice);
 		return indice;
 	}
 	

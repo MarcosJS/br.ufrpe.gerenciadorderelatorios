@@ -7,6 +7,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
@@ -116,7 +117,8 @@ public class SaidaSistema extends JPanel {
 		this.scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
 		scrollPane.setBackground(Color.BLUE);
-		scrollPane.setBounds(0, 0, 943, 650);
+		scrollPane.setBounds(0, 0, 1500, 650);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		saida.add(scrollPane);
 		this.setcGR(cGR);
 		this.setCorFaixas(corFaixas);
@@ -161,7 +163,7 @@ public class SaidaSistema extends JPanel {
 		PainelTextoDestacado textPane;
 		
 		try {
-			textPane = new PainelTextoDestacado(/*Relatorios.obterRelatorioRenderizado(this.relExibido, this.cabecalho)*/this.relExibido, this.cabecalho, this.corFaixas, this.corSelecao);
+			textPane = new PainelTextoDestacado(this.relExibido, this.cabecalho, this.corFaixas, this.corSelecao);
 			textPane.setEditable(false);
 			this.scrollPane.setViewportView(textPane);
 		} catch (BadLocationException e) {
