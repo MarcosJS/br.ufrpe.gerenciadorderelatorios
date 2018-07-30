@@ -34,7 +34,7 @@ public class NucleoGeRel {
 		/*Carregando sistema a partir do banco de dados.*/
 		this.carregarHistoricos();
 		
-		this.prepararNovoHistorico();
+		//this.prepararNovoHistorico();
 	}
 	
 	/**
@@ -138,14 +138,13 @@ public class NucleoGeRel {
 	public Linha[] obterDiffRelatorio(int indice) {
 		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
 		int tamanho = relatorio.obterDiffRelatorio().size();
-		Linha[] linhas = relatorio.obterDiffRelatorio().toArray(new Linha[tamanho]);
-		
-		return linhas;
+		return relatorio.obterDiffRelatorio().toArray(new Linha[tamanho]);
 	}
 	
-	public Linha[] obterNovas(int indice) {
-		// TODO Auto-generated method stub
-		return null;
+	public Linha[] obterDiffRelatorio(int indice, Condicao condicao) {
+		Relatorio relatorio = this.historicoSelecionado.consultarRelatorio(indice);
+		int tamanho = relatorio.obterDiffRelatorio(condicao).size();
+		return relatorio.obterDiffRelatorio(condicao).toArray(new Linha[tamanho]);
 	}
 	
 	/**
@@ -175,7 +174,8 @@ public class NucleoGeRel {
 				} catch (ArquivoOuDiretorioNaoExisteException e1) {
 					e1.printStackTrace();
 				}
-			}	
+			}
+			this.historicoSelecionado = this.historicos.get(0);
 		}
 	}
 	
@@ -216,15 +216,5 @@ public class NucleoGeRel {
 	 * */
 	public String obterId() {
 		return this.historicoSelecionado.obterId();
-	}
-
-	public Linha[] obterExcluidos(int indice) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Linha[] obterEstaveis(int indice) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

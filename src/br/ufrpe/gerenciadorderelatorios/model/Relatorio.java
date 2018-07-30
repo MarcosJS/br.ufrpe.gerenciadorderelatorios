@@ -113,7 +113,17 @@ public abstract class Relatorio extends Gravavel{
 	public ArrayList<Linha> obterDiffRelatorio() {
 		return diffRelatorio;
 	}
-
+	
+	public ArrayList<Linha> obterDiffRelatorio(Condicao condicao) {
+		ArrayList<Linha> linhas = new ArrayList<Linha>();
+		for(Linha l: this.diffRelatorio.toArray(new Linha[this.diffRelatorio.size()])) {
+			if(l.obterCondicao().equals(condicao)) {
+				linhas.add(l);
+			}
+		}
+		return linhas;
+	}
+	
 	/**
 	 * Obtêm o numero de linhas do relatório.
 	 * @return um <code>integer</code> que representa a quantidade de linhas do relatório.

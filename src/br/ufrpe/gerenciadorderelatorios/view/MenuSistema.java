@@ -52,7 +52,7 @@ public class MenuSistema extends JPanel {
     	JButton btnRelatorioCompleto = new JButton("RELAT\u00D3RIO COMPLETO");
     	btnRelatorioCompleto.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (getEstaCarregado()) {
+    			if ((controle.obterQuantidadeHistoricos() > 0) || getEstaCarregado()) {
     				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.COMPLETO);
 					saida.renderizarRelatorio();
 				} else {
@@ -88,7 +88,7 @@ public class MenuSistema extends JPanel {
     	JButton btnNovos = new JButton("NOVOS");
     	btnNovos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (getEstaCarregado()) {
+    			if ((controle.obterQuantidadeHistoricos() > 0) || getEstaCarregado()) {
     				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.NOVAS);
 					saida.renderizarRelatorio();
 				} else {
@@ -106,7 +106,7 @@ public class MenuSistema extends JPanel {
     	JButton btnExcludos = new JButton("EXCLU\u00CDDOS");
     	btnExcludos.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (getEstaCarregado()) {
+    			if ((controle.obterQuantidadeHistoricos() > 0) || getEstaCarregado()) {
     				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.EXCLUIDAS);
 					saida.renderizarRelatorio();
 				} else {
@@ -124,7 +124,7 @@ public class MenuSistema extends JPanel {
     	JButton btnInalterado = new JButton("INALTERADOS");
     	btnInalterado.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			if (getEstaCarregado()) {
+    			if ((controle.obterQuantidadeHistoricos() > 0) || getEstaCarregado()) {
     				saida.definirTipoRelatorio(SaidaSistema.TipoRelatorio.ESTAVEIS);
 					saida.renderizarRelatorio();
 				} else {

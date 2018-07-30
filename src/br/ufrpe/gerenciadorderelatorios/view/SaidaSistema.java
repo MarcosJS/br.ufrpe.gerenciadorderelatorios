@@ -11,6 +11,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
 import br.ufrpe.gerenciadorderelatorios.control.NucleoGeRel;
+import br.ufrpe.gerenciadorderelatorios.model.Condicao;
 import br.ufrpe.gerenciadorderelatorios.model.Linha;
 
 import java.awt.event.ActionListener;
@@ -145,15 +146,15 @@ public class SaidaSistema extends JPanel {
 			this.cabecalho = "RELATÓRIO COMPLETO";
 			break;
 		case NOVAS:
-			this.relExibido = cGR.obterNovas(this.indice);
+			this.relExibido = cGR.obterDiffRelatorio(this.indice, Condicao.NOVA);
 			this.cabecalho = "ÍTENS NOVOS NO RELATRIO";
 			break;
 		case EXCLUIDAS:
-			this.relExibido = cGR.obterExcluidos(this.indice);
+			this.relExibido = cGR.obterDiffRelatorio(this.indice, Condicao.EXCLUIDA);
 			this.cabecalho = "ÍTENS EXCLUÍDOS DO RELATÓRIO";
 			break;
 		case ESTAVEIS:
-			this.relExibido = cGR.obterEstaveis(this.indice);
+			this.relExibido = cGR.obterDiffRelatorio(this.indice, Condicao.ESTAVEL);
 			this.cabecalho = "ÍTENS INALTERADOS NO RELATÓRIO";
 			break;
 		default:
